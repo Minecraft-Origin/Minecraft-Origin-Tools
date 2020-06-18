@@ -1,0 +1,38 @@
+{
+  "name": "minecraft-origin-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "build": "hu build",
+    "watch": "hu watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zhang-Wei-666/Minecraft-Origin-Tools.git"
+  },
+  "keywords": [],
+  "author": "Wei Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zhang-Wei-666/Minecraft-Origin-Tools/issues"
+  },
+  "homepage": "https://github.com/Zhang-Wei-666/Minecraft-Origin-Tools#readme",
+  "devDependencies": {
+    "@moomfe/hu-cli": "^1.10.0-bata.1",
+    "@vue/compiler-sfc": "^3.0.0-beta.15",
+    "ant-design-vue": "^1.6.2",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "moment": "^2.26.0",
+    "rollup-plugin-vue": "^6.0.0-beta.6",
+    "vue": "^2.6.11"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "koa": "^2.12.1",
+    "koa-static": "^5.0.0"
+  }
+}
