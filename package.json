@@ -32,8 +32,10 @@
     "vue-template-compiler": "^2.6.11"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "chalk": "^4.1.0",
     "koa": "^2.12.1",
+    "koa-router": "^9.0.1",
     "koa-static": "^5.0.0"
   }
 }

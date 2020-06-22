@@ -5,9 +5,10 @@ const PluginVue = require('rollup-plugin-vue');
 const HU_RUNNING_COMMAND = process.env.HU_RUNNING_COMMAND;
 
 
-// 拷贝 Vue 到静态资源文件夹
+// 拷贝类库到静态资源文件夹
 [
   resolve(dirname(require.resolve('vue')), 'vue.min.js'),
+  resolve(dirname(require.resolve('axios')), 'dist/axios.min.js'),
   resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.js')
 ].forEach((from) => {
   copySync(from, resolve(
@@ -31,7 +32,8 @@ module.exports = {
 
   externals: {
     vue: 'Vue',
-    'ant-design-vue': 'antd'
+    'ant-design-vue': 'antd',
+    axios: 'axios'
   },
 
   plugins: () => [
