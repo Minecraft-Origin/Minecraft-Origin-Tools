@@ -22,6 +22,14 @@ module.exports = {
     'process.env.NODE_ENV': JSON.stringify(HU_RUNNING_COMMAND === 'build' ? 'production' : 'development')
   },
 
+  banner: '/* eslint-disable */\n\n',
+
+  pluginOptions: {
+    banner: {
+      isComment: false
+    }
+  },
+
   pipe: [
     {
       input: 'src/index.js',
