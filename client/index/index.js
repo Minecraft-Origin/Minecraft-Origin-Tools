@@ -1,9 +1,10 @@
 /* eslint-disable */
 
-(function (Vue) {
+(function (Vue, VueDesignVue) {
     'use strict';
 
     Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
+    VueDesignVue = VueDesignVue && Object.prototype.hasOwnProperty.call(VueDesignVue, 'default') ? VueDesignVue['default'] : VueDesignVue;
 
     //
     //
@@ -128,7 +129,8 @@
         undefined
       );
 
+    Vue.use(VueDesignVue);
     new Vue({ ...__vue_component__
     }).$mount('#app');
 
-}(Vue));
+}(Vue, antd));

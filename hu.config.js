@@ -1,4 +1,4 @@
-const { dirname, resolve } = require('path');
+const { dirname, resolve, basename } = require('path');
 const { copySync } = require('fs-extra');
 const PluginVue = require('rollup-plugin-vue');
 
@@ -6,15 +6,14 @@ const HU_RUNNING_COMMAND = process.env.HU_RUNNING_COMMAND;
 
 
 // 拷贝 Vue 到静态资源文件夹
-{
-  const vueDirname = dirname(require.resolve('vue'));
-  const vuePath = resolve(vueDirname, 'vue.min.js');
-
-  copySync(
-    vuePath,
-    resolve(__dirname, 'client/static/lib/vue.min.js')
-  );
-}
+[
+  resolve(dirname(require.resolve('vue')), 'vue.min.js'),
+  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.js')
+].forEach((from) => {
+  copySync(from, resolve(
+    __dirname, 'client/static/lib', basename(from)
+  ));
+});
 
 
 module.exports = {
@@ -31,7 +30,8 @@ module.exports = {
   },
 
   externals: {
-    vue: 'Vue'
+    vue: 'Vue',
+    'ant-design-vue': 'antd'
   },
 
   plugins: () => [
