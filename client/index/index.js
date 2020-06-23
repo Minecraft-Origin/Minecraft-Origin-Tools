@@ -6,7 +6,7 @@
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
   VueDesignVue = VueDesignVue && Object.prototype.hasOwnProperty.call(VueDesignVue, 'default') ? VueDesignVue['default'] : VueDesignVue;
 
-  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  height: 100%;\n  padding: 12px 36px 0; }\n";
+  document.head.appendChild(document.createElement('style')).innerHTML = ".update-check-content {\n  text-align: center; }\n";
 
   //
   var script = {};
@@ -95,13 +95,42 @@
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
     return _c(
-      "div",
-      { attrs: { id: "app" } },
+      "a-layout",
       [
         _c(
-          "a-tabs",
-          { attrs: { "default-active-key": "1" } },
-          [_c("a-tab-pane", { key: "1", attrs: { tab: "Update Check" } })],
+          "a-layout-sider",
+          [
+            _c(
+              "a-menu",
+              { attrs: { mode: "inline", "default-selected-keys": ["1"] } },
+              [
+                _c("a-menu-item", { key: "1" }, [_vm._v("Basis")]),
+                _vm._v(" "),
+                _c("a-menu-item", { key: "2" }, [_vm._v("Basis+")]),
+                _vm._v(" "),
+                _c("a-menu-item", { key: "3" }, [_vm._v("Enhance")]),
+                _vm._v(" "),
+                _c("a-menu-item", { key: "4" }, [_vm._v("Ultimate_Limit")])
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "a-layout",
+          [
+            _c(
+              "a-layout-content",
+              {
+                class: ["update-check-content"],
+                style: { margin: "24px 16px 0" }
+              },
+              [_c("a-spin", { attrs: { tip: "Loading ..." } })],
+              1
+            )
+          ],
           1
         )
       ],
@@ -140,8 +169,78 @@
       undefined
     );
 
+  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  min-height: 100%;\n  padding: 0 36px 36px; }\n  #app > .ant-tabs {\n    overflow: visible; }\n    #app > .ant-tabs > .ant-tabs-bar {\n      position: -webkit-sticky;\n      position: sticky;\n      top: 0;\n      background-color: #FFF; }\n";
+
+  //
+  var script$1 = {
+    components: {
+      UpdateCheck: __vue_component__
+    }
+  };
+
+  /* script */
+  const __vue_script__$1 = script$1;
+
+  /* template */
+  var __vue_render__$1 = function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c(
+      "div",
+      { attrs: { id: "app" } },
+      [
+        _c(
+          "a-tabs",
+          { attrs: { size: "large", "default-active-key": "1" } },
+          [
+            _c(
+              "a-tab-pane",
+              { key: "1", attrs: { tab: "Update Check" } },
+              [_c("UpdateCheck")],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  };
+  var __vue_staticRenderFns__$1 = [];
+  __vue_render__$1._withStripped = true;
+
+    /* style */
+    const __vue_inject_styles__$1 = undefined;
+    /* scoped */
+    const __vue_scope_id__$1 = undefined;
+    /* module identifier */
+    const __vue_module_identifier__$1 = undefined;
+    /* functional template */
+    const __vue_is_functional_template__$1 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+    /* style inject shadow dom */
+    
+
+    
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+      __vue_inject_styles__$1,
+      __vue_script__$1,
+      __vue_scope_id__$1,
+      __vue_is_functional_template__$1,
+      __vue_module_identifier__$1,
+      false,
+      undefined,
+      undefined,
+      undefined
+    );
+
   Vue.use(VueDesignVue);
-  new Vue({ ...__vue_component__
+  new Vue({ ...__vue_component__$1
   }).$mount('#app');
 
 }(Vue, antd));

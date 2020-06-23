@@ -2,7 +2,7 @@
 
 
 const KoaRouter = require('koa-router');
-const request = require('request');
+const ajax = require('../utils/ajax');
 
 
 /**
@@ -10,8 +10,12 @@ const request = require('request');
  * @param {KoaRouter} router
  */
 module.exports = (router) => {
-  // https://cdn.jsdelivr.net/gh/Zhang-Wei-666/Minecraft-Origin/README.md
+  //
   router.get('/README.md', async (ctx) => {
-    ctx.body = 'README.md';
+    try {
+      ctx.body = await ajax('https://raw.githubusercontent.com/Zhang-Wei-666/Minecraft-Origin/极限/README.md');
+    } catch (error) {
+      ctx.body = {};
+    }
   });
 };
