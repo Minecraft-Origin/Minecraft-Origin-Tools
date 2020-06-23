@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Zhang-Wei-666/Minecraft-Origin-Tools#readme",
   "devDependencies": {
-    "@moomfe/hu-cli": "^1.10.0-bata.1",
+    "@moomfe/hu-cli": "^1.10.0-bata.2",
     "ant-design-vue": "^1.6.2",
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.0",

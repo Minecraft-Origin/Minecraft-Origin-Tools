@@ -9,7 +9,8 @@ const HU_RUNNING_COMMAND = process.env.HU_RUNNING_COMMAND;
 [
   resolve(dirname(require.resolve('vue')), 'vue.min.js'),
   resolve(dirname(require.resolve('axios')), 'dist/axios.min.js'),
-  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.js')
+  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.js'),
+  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.css')
 ].forEach((from) => {
   copySync(from, resolve(
     __dirname, 'client/static/lib', basename(from)
