@@ -18,6 +18,8 @@ module.exports = (router) => {
 
 // 获取 README.md 的内容
 async function GetReadme() {
+  // minecraft-origin-tools
+  // m29qtnhNxa8P36Dcmn
   try {
     return await ajax('https://raw.githubusercontent.com/Zhang-Wei-666/Minecraft-Origin/极限/README.md');
   } catch (error) {
