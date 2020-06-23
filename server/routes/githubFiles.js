@@ -12,10 +12,15 @@ const ajax = require('../utils/ajax');
 module.exports = (router) => {
   //
   router.get('/README.md', async (ctx) => {
-    try {
-      ctx.body = await ajax('https://raw.githubusercontent.com/Zhang-Wei-666/Minecraft-Origin/极限/README.md');
-    } catch (error) {
-      ctx.body = {};
-    }
+    ctx.body = await GetReadme();
   });
 };
+
+// 获取 README.md 的内容
+async function GetReadme() {
+  try {
+    return await ajax('https://raw.githubusercontent.com/Zhang-Wei-666/Minecraft-Origin/极限/README.md');
+  } catch (error) {
+    return GetReadme();
+  }
+}

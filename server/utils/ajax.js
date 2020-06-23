@@ -7,7 +7,8 @@ const Axios = require('axios');
 
 const axios = Axios.create();
 const defaultOptions = {
-  method: 'get'
+  method: 'get',
+  timeout: 1000
 };
 
 
@@ -57,6 +58,7 @@ module.exports = (url, params, options) => {
   return axios({
     url,
     params,
-    method: options.method
+    method: options.method,
+    timeout: options.timeout
   });
 };
