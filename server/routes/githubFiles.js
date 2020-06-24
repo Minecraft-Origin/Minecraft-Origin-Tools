@@ -2,6 +2,7 @@
 
 
 const KoaRouter = require('koa-router');
+const atob = require('atob');
 const ajax = require('../utils/ajax');
 
 
@@ -16,12 +17,12 @@ module.exports = (router) => {
   });
 };
 
-// 获取 README.md 的内容
+/**
+ * 获取 README.md 的内容
+ */
 async function GetReadme() {
-  // minecraft-origin-tools
-  // m29qtnhNxa8P36Dcmn
   try {
-    return await ajax('https://raw.githubusercontent.com/Zhang-Wei-666/Minecraft-Origin/极限/README.md');
+    return decodeURIComponent(escape(atob((await ajax('https://api.github.com/repos/Zhang-Wei-666/Minecraft-Origin/contents/README.md')).content)));
   } catch (error) {
     return GetReadme();
   }

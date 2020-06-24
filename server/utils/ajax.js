@@ -8,7 +8,7 @@ const Axios = require('axios');
 const axios = Axios.create();
 const defaultOptions = {
   method: 'get',
-  timeout: 1000
+  timeout: 0
 };
 
 
