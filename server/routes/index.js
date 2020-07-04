@@ -2,7 +2,6 @@
 
 
 const KoaRouter = require('koa-router');
-const GithubFilesRouter = require('./githubFiles');
 
 
 /**
@@ -10,9 +9,7 @@ const GithubFilesRouter = require('./githubFiles');
  * @param {KoaRouter} router
  */
 module.exports = (router) => {
-  [
-    GithubFilesRouter
-  ].forEach((routerFn) => {
-    routerFn(router);
-  });
+  // [].forEach((routerFn) => {
+  //   routerFn(router);
+  // });
 };

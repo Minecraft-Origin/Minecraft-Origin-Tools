@@ -22,8 +22,8 @@ module.exports = {
 
   mode: HU_RUNNING_COMMAND === 'build',
 
-  inputDir: '',
-  outputDir: '',
+  inputDir: 'src',
+  outputDir: 'client',
 
   banner: '/* eslint-disable */\n\n',
 
@@ -32,9 +32,9 @@ module.exports = {
   },
 
   externals: {
-    vue: 'Vue',
+    'vue': 'Vue',
     'ant-design-vue': 'antd',
-    axios: 'axios'
+    'axios': 'axios'
   },
 
   plugins: () => [
@@ -53,8 +53,8 @@ module.exports = {
 
   pipe: [
     {
-      input: 'src/index.js',
-      output: 'client/index/index.js'
+      input: 'index/index.js',
+      output: 'index/index.js'
     }
   ]
 };

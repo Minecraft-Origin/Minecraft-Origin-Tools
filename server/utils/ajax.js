@@ -17,18 +17,22 @@ axios.interceptors.request.use(
   (config) => {
     const headers = config.headers || (config.headers = {});
 
-    headers['Accept-Encoding'] = headers['Accept-Encoding'] || 'gzip, deflate, br';
-    headers['Accept-Language'] = headers['Accept-Language'] || 'zh-CN,zh;q=0.9';
-    headers['Cache-Control'] = headers['Cache-Control'] || 'no-cache';
-    headers['Connection'] = headers['Connection'] || 'keep-alive';
-    headers['Host'] = headers['Host'] || Url.parse(config.url).host;
-    headers['Pragma'] = headers['Pragma'] || 'no-cache';
-    headers['Sec-Fetch-Dest'] = headers['Sec-Fetch-Dest'] || 'document';
-    headers['Sec-Fetch-Mode'] = headers['Sec-Fetch-Mode'] || 'navigate';
-    headers['Sec-Fetch-Site'] = headers['Sec-Fetch-Site'] || 'none';
-    headers['Sec-Fetch-User'] = headers['Sec-Fetch-User'] || '?1';
-    headers['Upgrade-Insecure-Requests'] = headers['Upgrade-Insecure-Requests'] || '1';
-    headers['User-Agent'] = headers['User-Agent'] || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36';
+    Object.entries({
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept-Language': 'zh-CN,zh;q=0.9',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Host': Url.parse(config.url).host,
+      'Pragma': 'no-cache',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Upgrade-Insecure-Requests': '1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'
+    }).forEach(([header, value]) => {
+      headers[headers] = headers[headers] || value;
+    });
 
     return config;
   },
