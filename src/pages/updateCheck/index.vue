@@ -1,11 +1,8 @@
 <template>
   <a-layout>
     <a-layout-sider :style="{ backgroundColor: '#FFF' }">
-      <a-menu mode="inline" :default-selected-keys="['1']">
-        <a-menu-item key="1">Basis</a-menu-item>
-        <a-menu-item key="2">Basis+</a-menu-item>
-        <a-menu-item key="3">Enhance</a-menu-item>
-        <a-menu-item key="4">Ultimate_Limit</a-menu-item>
+      <a-menu mode="inline" :default-selected-keys="menuDataList[0].key">
+        <a-menu-item v-for="menuData in menuDataList" :key="menuData.key">{{ menuData.label }}</a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -18,18 +15,16 @@
         <template v-else-if="state === 2">
           <a-result status="error" title="获取 README.md 文件失败" :sub-title="stateError.message">
             <template #extra>
-              <template v-for="(btnData, index) in retryButtonData">
-                <a-button
-                  type="primary"
-                  :key="btnData.cycles"
-                  :loading="retryActiveButtonIndex === index"
-                  :disabled="retryActiveButtonIndex !== null && retryActiveButtonIndex !== index"
-                  @click="retryGetFileContent(btnData.cycles)"
-                >
-                  {{ btnData.label }}
-                  {{ retryActiveButtonIndex === index && index > 0 ? `( ${ retryCount } )` : '' }}
-                </a-button>
-              </template>
+              <a-button
+                v-for="(btnData, index) in retryButtonDataList" :key="btnData.cycles"
+                type="primary"
+                :loading="retryActiveButtonIndex === index"
+                :disabled="retryActiveButtonIndex !== null && retryActiveButtonIndex !== index"
+                @click="retryGetFileContent(btnData.cycles)"
+              >
+                {{ btnData.label }}
+                {{ retryActiveButtonIndex === index && index > 0 ? `( ${ retryCount } )` : '' }}
+              </a-button>
             </template>
           </a-result>
         </template>
@@ -46,6 +41,7 @@
   import './index.scss?insert';
   import getGitHubFile from '../../tools/getGitHubFile';
   import parseMarkdown from './util/parseMarkdown'
+  import isTableTitle from './util/isTableTitle'
 
   export default {
     data: () => ({
@@ -63,10 +59,17 @@
       /** 加载失败时点击的重试按钮 Index */
       retryActiveButtonIndex: null,
       /** 加载失败时需要渲染的重试按钮相关数据 */
-      retryButtonData: [
+      retryButtonDataList: [
         { label: '重试', cycles: 1 },
         { label: '重试 10 次', cycles: 10 },
         { label: '重试到成功为止', cycles: Infinity }
+      ],
+      /** 菜单数据 */
+      menuDataList: [
+        { label: '基础', key: 'Basis' },
+        { label: '基础+', key: 'Basis+' },
+        { label: '增强', key: 'Enhance' },
+        { label: '极限', key: 'Ultimate_Limit' }
       ],
       /** README.md 文件内容 */
       content: ''
@@ -77,11 +80,35 @@
         let json = {}
 
         if (this.state === 1) {
-          const mdLexer = parseMarkdown(this.content)
-          // const 
+          const tokensList = parseMarkdown(this.content)
 
-          console.log(mdLexer)
+          this.menuDataList.forEach(menuData => {
+            const tableTitleIndex = tokensList.findIndex(token => token.type === 'html' && isTableTitle(menuData.label, token.text));
+            const tableTokens = tokensList[tableTitleIndex + 1]
+            const tableData = json[menuData.label] = [];
+
+            // 遍历出数据
+            tableTokens.tokens.cells.forEach(([ data ]) => {
+              /** 中文名称, 原始名称, 模组主页 */
+              let title = '', subTitle = '', href = '';
+
+              data.forEach(item => {
+                switch (item.type) {
+                  case 'text': title += item.text; break
+                  case 'link': subTitle = item.text; href = item.href; break;
+                }
+              });
+
+              tableData.push({
+                title: title.replace(/\s*-\s*$/, '').trim(),
+                subTitle,
+                href
+              });
+            })
+          })
         }
+
+        console.log(json)
 
         return json
       }
@@ -103,7 +130,7 @@
       retryGetFileContent: async function (cycles) {
         this.state = 2
         this.retryCount = 0
-        this.retryActiveButtonIndex = this.retryButtonData.map(({ cycles }) => cycles).indexOf(cycles)
+        this.retryActiveButtonIndex = this.retryButtonDataList.map(({ cycles }) => cycles).indexOf(cycles)
 
         for(let i = 0; i < cycles; i++) {
           this.retryCount++

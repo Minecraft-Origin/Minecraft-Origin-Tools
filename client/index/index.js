@@ -2403,6 +2403,22 @@
     return lexer.lex(markdownStr);
   }
 
+  /**
+   * 判断名称是否和传入 HTML 结构及内容匹配
+   * @param {*} title 名称
+   * @param {*} htmlStr HTML 字符串
+   */
+  function isTableTitle(title, htmlStr) {
+    const template = document.createElement('template'); // eslint-disable-next-line indent
+
+    template.innerHTML = htmlStr;
+    const fragment = document.importNode(template.content, true);
+
+    if (fragment.firstElementChild.nodeName.toUpperCase() === 'H3' && fragment.firstElementChild.textContent.trim() === title) {
+      return true;
+    }
+  }
+
   //
   var script = {
     data: () => ({
@@ -2424,7 +2440,7 @@
       retryActiveButtonIndex: null,
 
       /** 加载失败时需要渲染的重试按钮相关数据 */
-      retryButtonData: [{
+      retryButtonDataList: [{
         label: '重试',
         cycles: 1
       }, {
@@ -2433,6 +2449,21 @@
       }, {
         label: '重试到成功为止',
         cycles: Infinity
+      }],
+
+      /** 菜单数据 */
+      menuDataList: [{
+        label: '基础',
+        key: 'Basis'
+      }, {
+        label: '基础+',
+        key: 'Basis+'
+      }, {
+        label: '增强',
+        key: 'Enhance'
+      }, {
+        label: '极限',
+        key: 'Ultimate_Limit'
       }],
 
       /** README.md 文件内容 */
@@ -2444,11 +2475,39 @@
         let json = {};
 
         if (this.state === 1) {
-          const mdLexer = parseMarkdown(this.content); // const 
+          const tokensList = parseMarkdown(this.content);
+          this.menuDataList.forEach(menuData => {
+            const tableTitleIndex = tokensList.findIndex(token => token.type === 'html' && isTableTitle(menuData.label, token.text));
+            const tableTokens = tokensList[tableTitleIndex + 1];
+            const tableData = json[menuData.label] = []; // 遍历出数据
 
-          console.log(mdLexer);
+            tableTokens.tokens.cells.forEach(([data]) => {
+              /** 中文名称, 原始名称, 模组主页 */
+              let title = '',
+                  subTitle = '',
+                  href = '';
+              data.forEach(item => {
+                switch (item.type) {
+                  case 'text':
+                    title += item.text;
+                    break;
+
+                  case 'link':
+                    subTitle = item.text;
+                    href = item.href;
+                    break;
+                }
+              });
+              tableData.push({
+                title: title.replace(/\s*-\s*$/, '').trim(),
+                subTitle,
+                href
+              });
+            });
+          });
         }
 
+        console.log(json);
         return json;
       }
 
@@ -2471,7 +2530,7 @@
       retryGetFileContent: async function (cycles) {
         this.state = 2;
         this.retryCount = 0;
-        this.retryActiveButtonIndex = this.retryButtonData.map(({
+        this.retryActiveButtonIndex = this.retryButtonDataList.map(({
           cycles
         }) => cycles).indexOf(cycles);
 
@@ -2584,16 +2643,17 @@
           [
             _c(
               "a-menu",
-              { attrs: { mode: "inline", "default-selected-keys": ["1"] } },
-              [
-                _c("a-menu-item", { key: "1" }, [_vm._v("Basis")]),
-                _vm._v(" "),
-                _c("a-menu-item", { key: "2" }, [_vm._v("Basis+")]),
-                _vm._v(" "),
-                _c("a-menu-item", { key: "3" }, [_vm._v("Enhance")]),
-                _vm._v(" "),
-                _c("a-menu-item", { key: "4" }, [_vm._v("Ultimate_Limit")])
-              ],
+              {
+                attrs: {
+                  mode: "inline",
+                  "default-selected-keys": _vm.menuDataList[0].key
+                }
+              },
+              _vm._l(_vm.menuDataList, function(menuData) {
+                return _c("a-menu-item", { key: menuData.key }, [
+                  _vm._v(_vm._s(menuData.label))
+                ])
+              }),
               1
             )
           ],
@@ -2624,50 +2684,46 @@
                           {
                             key: "extra",
                             fn: function() {
-                              return [
-                                _vm._l(_vm.retryButtonData, function(
-                                  btnData,
-                                  index
-                                ) {
-                                  return [
-                                    _c(
-                                      "a-button",
-                                      {
-                                        key: btnData.cycles,
-                                        attrs: {
-                                          type: "primary",
-                                          loading:
-                                            _vm.retryActiveButtonIndex === index,
-                                          disabled:
-                                            _vm.retryActiveButtonIndex !== null &&
-                                            _vm.retryActiveButtonIndex !== index
-                                        },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.retryGetFileContent(
-                                              btnData.cycles
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                " +
-                                            _vm._s(btnData.label) +
-                                            "\n                " +
-                                            _vm._s(
-                                              _vm.retryActiveButtonIndex ===
-                                                index && index > 0
-                                                ? "( " + _vm.retryCount + " )"
-                                                : ""
-                                            ) +
-                                            "\n              "
+                              return _vm._l(_vm.retryButtonDataList, function(
+                                btnData,
+                                index
+                              ) {
+                                return _c(
+                                  "a-button",
+                                  {
+                                    key: btnData.cycles,
+                                    attrs: {
+                                      type: "primary",
+                                      loading:
+                                        _vm.retryActiveButtonIndex === index,
+                                      disabled:
+                                        _vm.retryActiveButtonIndex !== null &&
+                                        _vm.retryActiveButtonIndex !== index
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.retryGetFileContent(
+                                          btnData.cycles
                                         )
-                                      ]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n              " +
+                                        _vm._s(btnData.label) +
+                                        "\n              " +
+                                        _vm._s(
+                                          _vm.retryActiveButtonIndex === index &&
+                                            index > 0
+                                            ? "( " + _vm.retryCount + " )"
+                                            : ""
+                                        ) +
+                                        "\n            "
                                     )
                                   ]
-                                })
-                              ]
+                                )
+                              })
                             },
                             proxy: true
                           }
