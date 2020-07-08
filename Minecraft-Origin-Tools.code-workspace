@@ -3,6 +3,14 @@
     {
       "name": "Minecraft-Origin-Tools",
       "path": "."
+    },
+    {
+      "name": "Server",
+      "path": "server"
+    },
+    {
+      "name": "Src",
+      "path": "src"
     }
   ],
   "settings": {
@@ -12,7 +20,9 @@
       ".gitignore": true,
       "Minecraft-Origin-Tools.code-workspace": true,
       "node_modules": true,
-      "package-lock.json": true
+      "package-lock.json": true,
+      "server": true,
+      "src": true
     },
     "editor.tabSize": 2,
     "editor.detectIndentation": false,
