@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import UpdateCheck from '../pages/updateCheck/index.vue'
+  import UpdateCheck from '../pages/updateCheck/index.vue';
   import './index.scss?insert';
 
   export default {
@@ -16,5 +16,5 @@
     components: {
       UpdateCheck
     }
-  }
+  };
 </script>

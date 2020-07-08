@@ -2472,7 +2472,7 @@
     computed: {
       /** README.md 文件的 JSON 格式内容 */
       contentJson() {
-        let json = {};
+        const json = {};
 
         if (this.state === 1) {
           const tokensList = parseMarkdown(this.content);
@@ -2483,9 +2483,9 @@
 
             tableTokens.tokens.cells.forEach(([data]) => {
               /** 中文名称, 原始名称, 模组主页 */
-              let title = '',
-                  subTitle = '',
-                  href = '';
+              let title = '';
+              let subTitle = '';
+              let href = '';
               data.forEach(item => {
                 switch (item.type) {
                   case 'text':
@@ -2514,7 +2514,7 @@
     },
     methods: {
       /** 获取文件内容 */
-      getFileContent: async function () {
+      async getFileContent() {
         try {
           this.content = await getGitHubFile('/README.md');
           this.stateError = null;
@@ -2527,22 +2527,24 @@
       },
 
       /** 点击重试按钮 */
-      retryGetFileContent: async function (cycles) {
+      async retryGetFileContent(cycles) {
         this.state = 2;
         this.retryCount = 0;
         this.retryActiveButtonIndex = this.retryButtonDataList.map(({
-          cycles
-        }) => cycles).indexOf(cycles);
+          cycles: _cycles
+        }) => _cycles).indexOf(cycles);
 
         for (let i = 0; i < cycles; i++) {
           this.retryCount++;
-          await this.getFileContent();
+          await this.getFileContent(); // eslint-disable-line no-await-in-loop
+
           if (this.state === 1) break;
         }
 
         this.retryCount = 0;
         this.retryActiveButtonIndex = null;
       }
+
     },
 
     mounted() {

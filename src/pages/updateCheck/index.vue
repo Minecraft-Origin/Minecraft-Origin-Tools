@@ -40,8 +40,8 @@
 <script>
   import './index.scss?insert';
   import getGitHubFile from '../../tools/getGitHubFile';
-  import parseMarkdown from './util/parseMarkdown'
-  import isTableTitle from './util/isTableTitle'
+  import parseMarkdown from './util/parseMarkdown';
+  import isTableTitle from './util/isTableTitle';
 
   export default {
     data: () => ({
@@ -76,26 +76,28 @@
     }),
     computed: {
       /** README.md 文件的 JSON 格式内容 */
-      contentJson () {
-        let json = {}
+      contentJson() {
+        const json = {};
 
         if (this.state === 1) {
-          const tokensList = parseMarkdown(this.content)
+          const tokensList = parseMarkdown(this.content);
 
-          this.menuDataList.forEach(menuData => {
-            const tableTitleIndex = tokensList.findIndex(token => token.type === 'html' && isTableTitle(menuData.label, token.text));
-            const tableTokens = tokensList[tableTitleIndex + 1]
+          this.menuDataList.forEach((menuData) => {
+            const tableTitleIndex = tokensList.findIndex((token) => token.type === 'html' && isTableTitle(menuData.label, token.text));
+            const tableTokens = tokensList[tableTitleIndex + 1];
             const tableData = json[menuData.label] = [];
 
             // 遍历出数据
-            tableTokens.tokens.cells.forEach(([ data ]) => {
+            tableTokens.tokens.cells.forEach(([data]) => {
               /** 中文名称, 原始名称, 模组主页 */
-              let title = '', subTitle = '', href = '';
+              let title = ''; let subTitle = ''; let
+                href = '';
 
-              data.forEach(item => {
+              data.forEach((item) => {
                 switch (item.type) {
-                  case 'text': title += item.text; break
+                  case 'text': title += item.text; break;
                   case 'link': subTitle = item.text; href = item.href; break;
+                  default:
                 }
               });
 
@@ -104,46 +106,46 @@
                 subTitle,
                 href
               });
-            })
-          })
+            });
+          });
         }
 
-        console.log(json)
+        console.log(json);
 
-        return json
+        return json;
       }
     },
     methods: {
       /** 获取文件内容 */
-      getFileContent: async function(){
+      async getFileContent() {
         try {
-          this.content = await getGitHubFile('/README.md')
-          this.stateError = null
-          this.state = 1
+          this.content = await getGitHubFile('/README.md');
+          this.stateError = null;
+          this.state = 1;
         } catch (error) {
-          this.content = ''
-          this.stateError = error
-          this.state = 2
+          this.content = '';
+          this.stateError = error;
+          this.state = 2;
         }
       },
       /** 点击重试按钮 */
-      retryGetFileContent: async function (cycles) {
-        this.state = 2
-        this.retryCount = 0
-        this.retryActiveButtonIndex = this.retryButtonDataList.map(({ cycles }) => cycles).indexOf(cycles)
+      async retryGetFileContent(cycles) {
+        this.state = 2;
+        this.retryCount = 0;
+        this.retryActiveButtonIndex = this.retryButtonDataList.map(({ cycles: _cycles }) => _cycles).indexOf(cycles);
 
-        for(let i = 0; i < cycles; i++) {
-          this.retryCount++
-          await this.getFileContent()
-          if (this.state === 1) break
+        for (let i = 0; i < cycles; i++) {
+          this.retryCount++;
+          await this.getFileContent(); // eslint-disable-line no-await-in-loop
+          if (this.state === 1) break;
         }
 
-        this.retryCount = 0
-        this.retryActiveButtonIndex = null
+        this.retryCount = 0;
+        this.retryActiveButtonIndex = null;
       }
     },
-    mounted () {
-      this.getFileContent()
+    mounted() {
+      this.getFileContent();
     }
-  }
+  };
 </script>
