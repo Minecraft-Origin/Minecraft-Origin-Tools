@@ -1,6 +1,3 @@
-/* eslint-disable dot-notation */
-
-
 const Url = require('url');
 const Axios = require('axios');
 
