@@ -2467,7 +2467,19 @@
       }],
 
       /** README.md 文件内容 */
-      content: ''
+      content: '',
+
+      /** */
+      contentTableColumns: [{
+        title: '名称',
+        dataIndex: 'title'
+      }, {
+        title: '模组名',
+        dataIndex: 'subTitle'
+      }, {
+        title: '模组主页',
+        dataIndex: 'href'
+      }]
     }),
     computed: {
       /** README.md 文件的 JSON 格式内容 */
@@ -2638,10 +2650,14 @@
     var _c = _vm._self._c || _h;
     return _c(
       "a-layout",
+      { staticClass: "update-check-root" },
       [
         _c(
           "a-layout-sider",
-          { style: { backgroundColor: "#FFF" } },
+          {
+            staticClass: "update-check-sider",
+            style: { backgroundColor: "#FFF" }
+          },
           [
             _c(
               "a-menu",
@@ -2668,7 +2684,7 @@
             _c(
               "a-layout-content",
               {
-                class: ["update-check-content"],
+                staticClass: "update-check-content",
                 style: { margin: "24px 16px 0" }
               },
               [
@@ -2733,7 +2749,16 @@
                       })
                     ]
                   : _vm.state === 1
-                  ? [_c("div", [_vm._v(_vm._s(_vm.contentJson))])]
+                  ? [
+                      _c("a-table", {
+                        attrs: {
+                          pagination: false,
+                          scroll: { y: "max-content" },
+                          columns: _vm.contentTableColumns,
+                          "data-source": _vm.contentJson["基础"]
+                        }
+                      })
+                    ]
                   : _vm._e()
               ],
               2
@@ -2777,7 +2802,7 @@
       undefined
     );
 
-  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  min-height: 100%;\n  padding: 0 36px 36px; }\n  #app > .ant-tabs {\n    overflow: visible; }\n    #app > .ant-tabs > .ant-tabs-bar {\n      position: -webkit-sticky;\n      position: sticky;\n      top: 0;\n      background-color: #FFF; }\n";
+  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  min-height: 100%;\n  padding: 0 36px 36px; }\n  #app > .ant-tabs {\n    overflow: visible; }\n    #app > .ant-tabs > .ant-tabs-bar {\n      position: -webkit-sticky;\n      position: sticky;\n      top: 0;\n      z-index: 666;\n      background-color: #FFF; }\n";
 
   //
   var script$1 = {

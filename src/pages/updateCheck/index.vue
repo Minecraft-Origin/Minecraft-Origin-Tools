@@ -1,12 +1,12 @@
 <template>
-  <a-layout>
-    <a-layout-sider :style="{ backgroundColor: '#FFF' }">
+  <a-layout class="update-check-root">
+    <a-layout-sider class="update-check-sider" :style="{ backgroundColor: '#FFF' }">
       <a-menu mode="inline" :default-selected-keys="menuDataList[0].key">
         <a-menu-item v-for="menuData in menuDataList" :key="menuData.key">{{ menuData.label }}</a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-content :class="['update-check-content']" :style="{ margin: '24px 16px 0' }">
+      <a-layout-content class="update-check-content" :style="{ margin: '24px 16px 0' }">
         <!-- 文件加载中 -->
         <template v-if="state === 0">
           <a-spin tip="Loading ..." />
@@ -30,7 +30,12 @@
         </template>
         <!-- 文件加载完成 -->
         <template v-else-if="state === 1">
-          <div>{{ contentJson }}</div>
+          <a-table
+            :pagination="false"
+            :scroll="{ y: 'max-content' }"
+            :columns="contentTableColumns"
+            :data-source="contentJson['基础']"
+          ></a-table>
         </template>
       </a-layout-content>
     </a-layout>
@@ -72,7 +77,13 @@
         { label: '极限', key: 'Ultimate_Limit' }
       ],
       /** README.md 文件内容 */
-      content: ''
+      content: '',
+      /** */
+      contentTableColumns: [
+        { title: '名称', dataIndex: 'title' },
+        { title: '模组名', dataIndex: 'subTitle' },
+        { title: '模组主页', dataIndex: 'href' }
+      ]
     }),
     computed: {
       /** README.md 文件的 JSON 格式内容 */
@@ -90,8 +101,7 @@
             // 遍历出数据
             tableTokens.tokens.cells.forEach(([data]) => {
               /** 中文名称, 原始名称, 模组主页 */
-              let title = ''; let subTitle = ''; let
-                href = '';
+              let title = ''; let subTitle = ''; let href = '';
 
               data.forEach((item) => {
                 switch (item.type) {
