@@ -12,8 +12,9 @@
     </a-layout-sider>
     <!-- 页面主体内容 -->
     <a-layout :style="{ marginLeft: `${ siderWidth }px` }">
-      <a-layout-content>
+      <a-layout-content class="app-content">
         <div v-if="menuActiveItem.component" :is="menuActiveItem.component" />
+        <a-empty v-else :description="false" />
       </a-layout-content>
     </a-layout>
   </a-layout>

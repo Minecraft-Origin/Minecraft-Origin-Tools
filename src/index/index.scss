@@ -2,7 +2,7 @@
   width: 100%; height: 100%;
   overflow: hidden;
 
-  // 侧边栏样式
+  // 页面侧边栏
   .app-sider{
     height: 100%;
     position: fixed; left: 0;
@@ -24,6 +24,14 @@
     // 菜单样式
     .app-sider-menu .ant-menu-item:first-child{
       margin-top: 0;
+    }
+  }
+
+  // 页面主体内容
+  .app-content{
+    // 空状态
+    > .ant-empty{
+      margin-top: 120px;
     }
   }
 }

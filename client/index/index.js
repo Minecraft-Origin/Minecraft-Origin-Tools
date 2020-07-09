@@ -2802,7 +2802,7 @@
       undefined
     );
 
-  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  height: 100%;\n  overflow: hidden; }\n  #app .app-sider {\n    height: 100%;\n    position: fixed;\n    left: 0;\n    overflow: auto; }\n    #app .app-sider .app-sider-name {\n      line-height: 3;\n      margin: 16px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      -webkit-user-select: none;\n         -moz-user-select: none;\n          -ms-user-select: none;\n              user-select: none;\n      background: rgba(255, 255, 255, 0.2);\n      color: #FFF;\n      font-size: 18px; }\n    #app .app-sider .app-sider-menu .ant-menu-item:first-child {\n      margin-top: 0; }\n";
+  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  height: 100%;\n  overflow: hidden; }\n  #app .app-sider {\n    height: 100%;\n    position: fixed;\n    left: 0;\n    overflow: auto; }\n    #app .app-sider .app-sider-name {\n      line-height: 3;\n      margin: 16px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      -webkit-user-select: none;\n         -moz-user-select: none;\n          -ms-user-select: none;\n              user-select: none;\n      background: rgba(255, 255, 255, 0.2);\n      color: #FFF;\n      font-size: 18px; }\n    #app .app-sider .app-sider-menu .ant-menu-item:first-child {\n      margin-top: 0; }\n  #app .app-content > .ant-empty {\n    margin-top: 120px; }\n";
 
   //
   var script$1 = {
@@ -2900,10 +2900,11 @@
           [
             _c(
               "a-layout-content",
+              { staticClass: "app-content" },
               [
                 _vm.menuActiveItem.component
                   ? _c(_vm.menuActiveItem.component, { tag: "div" })
-                  : _vm._e()
+                  : _c("a-empty", { attrs: { description: false } })
               ],
               1
             )
