@@ -2802,10 +2802,40 @@
       undefined
     );
 
-  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  min-height: 100%;\n  padding: 0 36px 36px; }\n  #app > .ant-tabs {\n    overflow: visible; }\n    #app > .ant-tabs > .ant-tabs-bar {\n      position: -webkit-sticky;\n      position: sticky;\n      top: 0;\n      z-index: 666;\n      background-color: #FFF; }\n";
+  document.head.appendChild(document.createElement('style')).innerHTML = "#app {\n  width: 100%;\n  height: 100%;\n  overflow: hidden; }\n  #app .app-sider {\n    height: 100%;\n    position: fixed;\n    left: 0;\n    overflow: auto; }\n    #app .app-sider .app-sider-name {\n      line-height: 3;\n      margin: 16px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      -webkit-user-select: none;\n         -moz-user-select: none;\n          -ms-user-select: none;\n              user-select: none;\n      background: rgba(255, 255, 255, 0.2);\n      color: #FFF;\n      font-size: 18px; }\n    #app .app-sider .app-sider-menu .ant-menu-item:first-child {\n      margin-top: 0; }\n";
 
   //
   var script$1 = {
+    data: () => ({
+      /** 侧边栏宽度 */
+      siderWidth: 280,
+
+      /** 菜单列表中被激活的菜单 Index */
+      menuActiveIndex: 0,
+
+      /** 菜单列表数据 */
+      menuDataList: [{
+        label: 'Update Check',
+        icon: 'star',
+        component: 'update-check'
+      }]
+    }),
+    computed: {
+      /** 菜单列表中被激活的菜单 */
+      menuActiveItem: ({
+        menuDataList,
+        menuActiveIndex
+      }) => menuDataList[menuActiveIndex]
+    },
+    methods: {
+      /** 被选中的菜单切换时记录当前菜单 Index */
+      changeMenuActiveIndex({
+        key
+      }) {
+        this.menuActiveIndex = key;
+      }
+
+    },
     components: {
       UpdateCheck: __vue_component__
     }
@@ -2820,17 +2850,61 @@
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
     return _c(
-      "div",
+      "a-layout",
       { attrs: { id: "app" } },
       [
         _c(
-          "a-tabs",
-          { attrs: { size: "large", "default-active-key": "1" } },
+          "a-layout-sider",
+          { staticClass: "app-sider", attrs: { width: _vm.siderWidth } },
+          [
+            _c("div", { staticClass: "app-sider-name" }, [
+              _vm._v("Minecraft Origin Tools")
+            ]),
+            _vm._v(" "),
+            _c(
+              "a-menu",
+              {
+                staticClass: "app-sider-menu",
+                attrs: {
+                  theme: "dark",
+                  mode: "inline",
+                  "default-selected-keys": [0]
+                },
+                on: { select: _vm.changeMenuActiveIndex }
+              },
+              _vm._l(_vm.menuDataList, function(menuData, index) {
+                return _c(
+                  "a-menu-item",
+                  { key: index },
+                  [
+                    menuData.icon
+                      ? _c("a-icon", { attrs: { type: menuData.icon } })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("span", {
+                      domProps: { textContent: _vm._s(menuData.label) }
+                    })
+                  ],
+                  1
+                )
+              }),
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "a-layout",
+          { style: { marginLeft: _vm.siderWidth + "px" } },
           [
             _c(
-              "a-tab-pane",
-              { key: "1", attrs: { tab: "Update Check" } },
-              [_c("UpdateCheck")],
+              "a-layout-content",
+              [
+                _vm.menuActiveItem.component
+                  ? _c(_vm.menuActiveItem.component, { tag: "div" })
+                  : _vm._e()
+              ],
               1
             )
           ],
