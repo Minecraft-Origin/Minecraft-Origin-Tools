@@ -16,6 +16,7 @@
   "settings": {
     "breadcrumbs.enabled": false,
     "files.exclude": {
+      ".eslintignore": true,
       ".eslintrc.js": true,
       ".gitignore": true,
       "Minecraft-Origin-Tools.code-workspace": true,

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 (function (Vue, VueDesignVue, axios$1) {
   'use strict';
 

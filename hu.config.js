@@ -25,8 +25,6 @@ module.exports = {
   inputDir: 'src',
   outputDir: 'client',
 
-  banner: '/* eslint-disable */\n\n',
-
   replace: {
     'process.env.NODE_ENV': JSON.stringify(HU_RUNNING_COMMAND === 'build' ? 'production' : 'development')
   },
@@ -40,12 +38,6 @@ module.exports = {
   plugins: () => [
     PluginVue()
   ],
-
-  pluginOptions: {
-    banner: {
-      isComment: false
-    }
-  },
 
   browserslist: [
     'last 2 Chrome versions'
