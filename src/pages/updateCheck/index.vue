@@ -1,45 +1,41 @@
 <template>
-  <a-layout class="update-check-root">
-    <a-layout-sider class="update-check-sider" :style="{ backgroundColor: '#FFF' }">
-      <a-menu mode="inline" :default-selected-keys="menuDataList[0].key">
-        <a-menu-item v-for="menuData in menuDataList" :key="menuData.key">{{ menuData.label }}</a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-content class="update-check-content" :style="{ margin: '24px 16px 0' }">
-        <!-- 文件加载中 -->
-        <template v-if="state === 0">
-          <a-spin tip="Loading ..." />
+  <div class="update-check-root">
+    <!-- 文件加载中 -->
+    <template v-if="state === 0">
+      <a-spin tip="Loading ..." />
+    </template>
+    <!-- 文件加载失败 -->
+    <template v-else-if="state === 2">
+      <a-result status="error" title="获取 README.md 文件失败" :sub-title="stateError.message">
+        <template #extra>
+          <a-button
+            v-for="(btnData, index) in retryButtonDataList" :key="btnData.cycles"
+            type="primary"
+            :loading="retryActiveButtonIndex === index"
+            :disabled="retryActiveButtonIndex !== null && retryActiveButtonIndex !== index"
+            @click="retryGetFileContent(btnData.cycles)"
+          >
+            {{ btnData.label }}
+            {{ retryActiveButtonIndex === index && index > 0 ? `( ${ retryCount } )` : '' }}
+          </a-button>
         </template>
-        <!-- 文件加载失败 -->
-        <template v-else-if="state === 2">
-          <a-result status="error" title="获取 README.md 文件失败" :sub-title="stateError.message">
-            <template #extra>
-              <a-button
-                v-for="(btnData, index) in retryButtonDataList" :key="btnData.cycles"
-                type="primary"
-                :loading="retryActiveButtonIndex === index"
-                :disabled="retryActiveButtonIndex !== null && retryActiveButtonIndex !== index"
-                @click="retryGetFileContent(btnData.cycles)"
-              >
-                {{ btnData.label }}
-                {{ retryActiveButtonIndex === index && index > 0 ? `( ${ retryCount } )` : '' }}
-              </a-button>
-            </template>
-          </a-result>
-        </template>
-        <!-- 文件加载完成 -->
-        <template v-else-if="state === 1">
+      </a-result>
+    </template>
+    <!-- 文件加载完成 -->
+    <template v-else-if="state === 1">
+      <a-tabs :default-active-key="menuDataList[0].key">
+        <a-tab-pane v-for="menuData in menuDataList" :key="menuData.key" :tab="menuData.label">
           <a-table
+            size="middle"
             :pagination="false"
             :scroll="{ y: 'max-content' }"
             :columns="contentTableColumns"
-            :data-source="contentJson['基础']"
+            :data-source="contentJson[menuData.key]"
           ></a-table>
-        </template>
-      </a-layout-content>
-    </a-layout>
-  </a-layout>
+        </a-tab-pane>
+      </a-tabs>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -80,9 +76,19 @@
       content: '',
       /** */
       contentTableColumns: [
-        { title: '名称', dataIndex: 'title' },
+        { title: '名称', dataIndex: 'title', width: '12em' },
         { title: '模组名', dataIndex: 'subTitle' },
         { title: '模组主页', dataIndex: 'href' }
+
+
+
+
+
+
+
+
+
+
       ]
     }),
     computed: {
@@ -96,7 +102,7 @@
           this.menuDataList.forEach((menuData) => {
             const tableTitleIndex = tokensList.findIndex((token) => token.type === 'html' && isTableTitle(menuData.label, token.text));
             const tableTokens = tokensList[tableTitleIndex + 1];
-            const tableData = json[menuData.label] = [];
+            const tableData = json[menuData.key] = [];
 
             // 遍历出数据
             tableTokens.tokens.cells.forEach(([data]) => {

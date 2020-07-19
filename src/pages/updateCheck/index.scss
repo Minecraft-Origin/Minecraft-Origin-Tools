@@ -1,3 +1,21 @@
-.update-check-content{
-  text-align: center;
+.update-check-root{
+  padding: 16px;
+  background-color: #FFF;
+
+  // 文件加载中
+  > .ant-spin{
+    display: block;
+    margin: 120px auto 0;
+  }
+
+  // 文件加载完成
+  > .ant-tabs{
+    margin-top: -16px;
+    overflow: visible;
+
+    > .ant-tabs-bar{
+      position: sticky; top: 0; z-index: 666;
+      background-color: #FFF;
+    }
+  }
 }

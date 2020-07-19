@@ -5,7 +5,7 @@
   VueDesignVue = VueDesignVue && Object.prototype.hasOwnProperty.call(VueDesignVue, 'default') ? VueDesignVue['default'] : VueDesignVue;
   axios$1 = axios$1 && Object.prototype.hasOwnProperty.call(axios$1, 'default') ? axios$1['default'] : axios$1;
 
-  document.head.appendChild(document.createElement('style')).innerHTML = ".update-check-content {\n  text-align: center; }\n";
+  document.head.appendChild(document.createElement('style')).innerHTML = ".update-check-root {\n  padding: 16px;\n  background-color: #FFF; }\n  .update-check-root > .ant-spin {\n    display: block;\n    margin: 120px auto 0; }\n  .update-check-root > .ant-tabs {\n    margin-top: -16px;\n    overflow: visible; }\n    .update-check-root > .ant-tabs > .ant-tabs-bar {\n      position: -webkit-sticky;\n      position: sticky;\n      top: 0;\n      z-index: 666;\n      background-color: #FFF; }\n";
 
   const axios = axios$1.create();
   const defaultOptions = {
@@ -36,7 +36,7 @@
   const githubFileAPI = 'https://api.github.com/repos/Zhang-Wei-666/Minecraft-Origin/contents';
   async function getGitHubFile(path) {
     /** 后台返回的文件信息 */
-    const data = await ajax(`${githubFileAPI}/${path}`);
+    const data = await ajax(`${githubFileAPI}/${path}?_=${+new Date()}`);
     /** 返回的结果 */
 
     let result = ''; // 如果文件是通过 base64 返回的, 则进行解码
@@ -2470,7 +2470,8 @@
       /** */
       contentTableColumns: [{
         title: '名称',
-        dataIndex: 'title'
+        dataIndex: 'title',
+        width: '12em'
       }, {
         title: '模组名',
         dataIndex: 'subTitle'
@@ -2489,7 +2490,7 @@
           this.menuDataList.forEach(menuData => {
             const tableTitleIndex = tokensList.findIndex(token => token.type === 'html' && isTableTitle(menuData.label, token.text));
             const tableTokens = tokensList[tableTitleIndex + 1];
-            const tableData = json[menuData.label] = []; // 遍历出数据
+            const tableData = json[menuData.key] = []; // 遍历出数据
 
             tableTokens.tokens.cells.forEach(([data]) => {
               /** 中文名称, 原始名称, 模组主页 */
@@ -2647,125 +2648,95 @@
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
     return _c(
-      "a-layout",
+      "div",
       { staticClass: "update-check-root" },
       [
-        _c(
-          "a-layout-sider",
-          {
-            staticClass: "update-check-sider",
-            style: { backgroundColor: "#FFF" }
-          },
-          [
-            _c(
-              "a-menu",
-              {
+        _vm.state === 0
+          ? [_c("a-spin", { attrs: { tip: "Loading ..." } })]
+          : _vm.state === 2
+          ? [
+              _c("a-result", {
                 attrs: {
-                  mode: "inline",
-                  "default-selected-keys": _vm.menuDataList[0].key
-                }
-              },
-              _vm._l(_vm.menuDataList, function(menuData) {
-                return _c("a-menu-item", { key: menuData.key }, [
-                  _vm._v(_vm._s(menuData.label))
-                ])
-              }),
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "a-layout",
-          [
-            _c(
-              "a-layout-content",
-              {
-                staticClass: "update-check-content",
-                style: { margin: "24px 16px 0" }
-              },
-              [
-                _vm.state === 0
-                  ? [_c("a-spin", { attrs: { tip: "Loading ..." } })]
-                  : _vm.state === 2
-                  ? [
-                      _c("a-result", {
-                        attrs: {
-                          status: "error",
-                          title: "获取 README.md 文件失败",
-                          "sub-title": _vm.stateError.message
-                        },
-                        scopedSlots: _vm._u([
+                  status: "error",
+                  title: "获取 README.md 文件失败",
+                  "sub-title": _vm.stateError.message
+                },
+                scopedSlots: _vm._u([
+                  {
+                    key: "extra",
+                    fn: function() {
+                      return _vm._l(_vm.retryButtonDataList, function(
+                        btnData,
+                        index
+                      ) {
+                        return _c(
+                          "a-button",
                           {
-                            key: "extra",
-                            fn: function() {
-                              return _vm._l(_vm.retryButtonDataList, function(
-                                btnData,
-                                index
-                              ) {
-                                return _c(
-                                  "a-button",
-                                  {
-                                    key: btnData.cycles,
-                                    attrs: {
-                                      type: "primary",
-                                      loading:
-                                        _vm.retryActiveButtonIndex === index,
-                                      disabled:
-                                        _vm.retryActiveButtonIndex !== null &&
-                                        _vm.retryActiveButtonIndex !== index
-                                    },
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.retryGetFileContent(
-                                          btnData.cycles
-                                        )
-                                      }
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n              " +
-                                        _vm._s(btnData.label) +
-                                        "\n              " +
-                                        _vm._s(
-                                          _vm.retryActiveButtonIndex === index &&
-                                            index > 0
-                                            ? "( " + _vm.retryCount + " )"
-                                            : ""
-                                        ) +
-                                        "\n            "
-                                    )
-                                  ]
-                                )
-                              })
+                            key: btnData.cycles,
+                            attrs: {
+                              type: "primary",
+                              loading: _vm.retryActiveButtonIndex === index,
+                              disabled:
+                                _vm.retryActiveButtonIndex !== null &&
+                                _vm.retryActiveButtonIndex !== index
                             },
-                            proxy: true
-                          }
-                        ])
+                            on: {
+                              click: function($event) {
+                                return _vm.retryGetFileContent(btnData.cycles)
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(btnData.label) +
+                                "\n          " +
+                                _vm._s(
+                                  _vm.retryActiveButtonIndex === index &&
+                                    index > 0
+                                    ? "( " + _vm.retryCount + " )"
+                                    : ""
+                                ) +
+                                "\n        "
+                            )
+                          ]
+                        )
                       })
-                    ]
-                  : _vm.state === 1
-                  ? [
+                    },
+                    proxy: true
+                  }
+                ])
+              })
+            ]
+          : _vm.state === 1
+          ? [
+              _c(
+                "a-tabs",
+                { attrs: { "default-active-key": _vm.menuDataList[0].key } },
+                _vm._l(_vm.menuDataList, function(menuData) {
+                  return _c(
+                    "a-tab-pane",
+                    { key: menuData.key, attrs: { tab: menuData.label } },
+                    [
                       _c("a-table", {
                         attrs: {
+                          size: "middle",
                           pagination: false,
                           scroll: { y: "max-content" },
                           columns: _vm.contentTableColumns,
-                          "data-source": _vm.contentJson["基础"]
+                          "data-source": _vm.contentJson[menuData.key]
                         }
                       })
-                    ]
-                  : _vm._e()
-              ],
-              2
-            )
-          ],
-          1
-        )
+                    ],
+                    1
+                  )
+                }),
+                1
+              )
+            ]
+          : _vm._e()
       ],
-      1
+      2
     )
   };
   var __vue_staticRenderFns__ = [];
