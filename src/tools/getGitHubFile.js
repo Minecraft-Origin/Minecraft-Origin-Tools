@@ -6,7 +6,7 @@ const githubFileAPI = 'https://api.github.com/repos/Zhang-Wei-666/Minecraft-Orig
 
 export default async function getGitHubFile(path) {
   /** 后台返回的文件信息 */
-  const data = await ajax(`${githubFileAPI}/${path}?_=${ +(new Date)}`);
+  const data = await ajax(`${githubFileAPI}/${path}?_=${+(new Date())}`);
   /** 返回的结果 */
   let result = '';
 

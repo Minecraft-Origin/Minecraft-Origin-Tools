@@ -79,16 +79,6 @@
         { title: '名称', dataIndex: 'title', width: '12em' },
         { title: '模组名', dataIndex: 'subTitle' },
         { title: '模组主页', dataIndex: 'href' }
-
-
-
-
-
-
-
-
-
-
       ]
     }),
     computed: {
