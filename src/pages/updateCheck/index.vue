@@ -30,7 +30,17 @@
             :pagination="false"
             :columns="contentTableColumns"
             :data-source="contentJson[menuData.key]"
-          ></a-table>
+          >
+            <!-- 将模组中文名和英文名拼接起来 -->
+            <template slot="name" slot-scope="name, record">
+              <span v-text="name"/>
+              <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
+            </template>
+            <!-- 使模组主页可点击跳转 -->
+            <template slot="href" slot-scope="href">
+              <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
+            </template>
+          </a-table>
         </a-tab-pane>
       </a-tabs>
     </template>
@@ -77,9 +87,8 @@
       contentJson: {},
       /** 表格列头 */
       contentTableColumns: [
-        { title: '名称', dataIndex: 'title', width: '15em' },
-        { title: '模组名', dataIndex: 'subTitle', width: '16em' },
-        { title: '模组主页', dataIndex: 'href' }
+        { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
+        { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
     methods: {
