@@ -1,12 +1,12 @@
 <template>
-  <div class="update-check-root">
+  <div class="update-check-root" :class="`state-${state}`">
     <!-- 文件加载中 -->
     <template v-if="state === 0">
       <a-spin tip="Loading ..." />
     </template>
     <!-- 文件加载失败 -->
     <template v-else-if="state === 2">
-      <a-result status="error" title="获取 README.md 文件失败" :sub-title="stateError.message">
+      <a-result status="error" title="获取 README.md 文件失败" :sub-title="stateError && stateError.message">
         <template #extra>
           <a-button
             v-for="(btnData, index) in retryButtonDataList" :key="btnData.cycles"
@@ -28,7 +28,6 @@
           <a-table
             size="middle"
             :pagination="false"
-            :scroll="{ y: 'max-content' }"
             :columns="contentTableColumns"
             :data-source="contentJson[menuData.key]"
           ></a-table>
@@ -74,53 +73,15 @@
       ],
       /** README.md 文件内容 */
       content: '',
-      /** */
+      /** README.md 文件内容 ( JSON 格式 ) */
+      contentJson: {},
+      /** 表格列头 */
       contentTableColumns: [
-        { title: '名称', dataIndex: 'title', width: '12em' },
-        { title: '模组名', dataIndex: 'subTitle' },
+        { title: '名称', dataIndex: 'title', width: '15em' },
+        { title: '模组名', dataIndex: 'subTitle', width: '16em' },
         { title: '模组主页', dataIndex: 'href' }
       ]
     }),
-    computed: {
-      /** README.md 文件的 JSON 格式内容 */
-      contentJson() {
-        const json = {};
-
-        if (this.state === 1) {
-          const tokensList = parseMarkdown(this.content);
-
-          this.menuDataList.forEach((menuData) => {
-            const tableTitleIndex = tokensList.findIndex((token) => token.type === 'html' && isTableTitle(menuData.label, token.text));
-            const tableTokens = tokensList[tableTitleIndex + 1];
-            const tableData = json[menuData.key] = [];
-
-            // 遍历出数据
-            tableTokens.tokens.cells.forEach(([data]) => {
-              /** 中文名称, 原始名称, 模组主页 */
-              let title = ''; let subTitle = ''; let href = '';
-
-              data.forEach((item) => {
-                switch (item.type) {
-                  case 'text': title += item.text; break;
-                  case 'link': subTitle = item.text; href = item.href; break;
-                  default:
-                }
-              });
-
-              tableData.push({
-                title: title.replace(/\s*-\s*$/, '').trim(),
-                subTitle,
-                href
-              });
-            });
-          });
-        }
-
-        console.log(json);
-
-        return json;
-      }
-    },
     methods: {
       /** 获取文件内容 */
       async getFileContent() {
@@ -133,6 +94,9 @@
           this.stateError = error;
           this.state = 2;
         }
+
+        // 解析文件
+        this.contentJson = this.state === 1 ? this.compileContentToJson() : {};
       },
       /** 点击重试按钮 */
       async retryGetFileContent(cycles) {
@@ -148,6 +112,44 @@
 
         this.retryCount = 0;
         this.retryActiveButtonIndex = null;
+      },
+      /** 解析 README.md 文件为 JSON 格式 */
+      compileContentToJson() {
+        const contentJson = {};
+        const tokensList = parseMarkdown(this.content);
+
+        this.menuDataList.forEach((menuData) => {
+          const tableTitleIndex = tokensList.findIndex((token) => token.type === 'html' && isTableTitle(menuData.label, token.text));
+          const tableTokens = tokensList[tableTitleIndex + 1];
+          const tableData = contentJson[menuData.key] = [];
+
+          // 遍历出数据
+          tableTokens.tokens.cells.forEach(([data]) => {
+            /** 中文名称, 原始名称, 模组主页 */
+            let title = ''; let subTitle = ''; let href = '';
+
+            data.forEach((item) => {
+              switch (item.type) {
+                case 'text': title += item.text; break;
+                case 'link': subTitle = item.text; href = item.href; break;
+                default:
+              }
+            });
+
+            // 去除中文名称和原始名称中间的连接符
+            title = title.replace(/\s*-\s*$/, '').trim();
+            // 转义符号
+            title = title.replace('&#39;', '\'').trim();
+
+            tableData.push({
+              title,
+              subTitle,
+              href
+            });
+          });
+        });
+
+        return contentJson;
       }
     },
     mounted() {

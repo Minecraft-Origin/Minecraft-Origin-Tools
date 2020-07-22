@@ -1,21 +1,27 @@
 .update-check-root{
+  width: 100%; height: 100%;
   padding: 16px;
   background-color: #FFF;
+  overflow: auto;
 
-  // 文件加载中
-  > .ant-spin{
-    display: block;
-    margin: 120px auto 0;
+  // 文件加载中时样式
+  &.state-0{
+    display: grid;
+    place-content: center;
   }
 
-  // 文件加载完成
-  > .ant-tabs{
-    margin-top: -16px;
-    overflow: visible;
+  // 文件加载完成时样式
+  &.state-1{
+    padding-top: 0;
 
-    > .ant-tabs-bar{
-      position: sticky; top: 0; z-index: 666;
-      background-color: #FFF;
+    > .ant-tabs{
+      overflow: visible;
+
+      > .ant-tabs-bar{
+        position: sticky; top: 0;
+        background-color: #FFF;
+        z-index: 666;
+      }
     }
   }
 }
