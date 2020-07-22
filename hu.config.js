@@ -1,4 +1,4 @@
-const { dirname, resolve, basename } = require('path');
+const { dirname, resolve, basename, extname } = require('path');
 const { copySync } = require('fs-extra');
 const PluginVue = require('rollup-plugin-vue');
 
@@ -13,7 +13,7 @@ const HU_RUNNING_COMMAND = process.env.HU_RUNNING_COMMAND;
   resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.css')
 ].forEach((from) => {
   copySync(from, resolve(
-    __dirname, 'client/static/lib', basename(from)
+    __dirname, `client/static/${extname(from) === '.css' ? 'styles' : 'lib'}`, basename(from)
   ));
 });
 
