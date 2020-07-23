@@ -37,11 +37,11 @@
               <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
             </template>
             <!-- 文件名及版本 -->
-            <div class="mod-name-and-version" slot="version" slot-scope="version, record">
-              <!-- 加 载 中 --><a-spin v-if="!record.versionCheckState" size="small" title="文件名及版本加载中" />
-              <!-- 加载失败 --><a-icon v-else-if="record.versionCheckState === 2" type="warning" title="文件名及版本加载失败" />
-              <!-- 加载完成 --><span v-else-if="record.versionCheckState === 1" v-text="version" />
-            </div>
+            <template slot="file" slot-scope="file, record">
+              <!-- 加 载 中 --><a-spin v-if="!record.nameGetState" size="small" title="文件名及版本加载中" />
+              <!-- 加载失败 --><a-icon v-else-if="record.nameGetState === 2" type="warning" title="文件名及版本加载失败" />
+              <!-- 加载完成 --><span v-else-if="record.nameGetState === 1" v-text="file" />
+            </template>
             <!-- 使模组主页可点击跳转 -->
             <template slot="href" slot-scope="href">
               <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
@@ -94,7 +94,7 @@
       /** 表格列头 */
       modsTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
-        { title: '文件名及版本', dataIndex: 'version', scopedSlots: { customRender: 'version' } },
+        { title: '文件名及版本', dataIndex: 'file', scopedSlots: { customRender: 'file' } },
         { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
@@ -120,7 +120,7 @@
           // 读取模组列表, 获取模组其余相关信息
           getGitHubFile('/Minecraft Origin/.minecraft/mods').then(this.analysisModsFileInfo).catch((error) => {
             [].concat(...Object.values(this.modpackData)).forEach((mod) => {
-              this.$set(mod, 'versionCheckState', 2);
+              this.$set(mod, 'nameGetState', 2);
             });
           });
         }

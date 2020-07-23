@@ -75,11 +75,11 @@ export default {
           });
 
           // 未读取到模组信息
-          if (!modInfo) this.$set(mod, 'versionCheckState', 2);
+          if (!modInfo) this.$set(mod, 'nameGetState', 2);
           // 读取到了模组信息, 获取当前模组文件名及版本
           else {
-            this.$set(mod, 'versionCheckState', 1);
-            this.$set(mod, 'version', modInfo.name.split(']').slice(-1)[0].trim());
+            this.$set(mod, 'nameGetState', 1);
+            this.$set(mod, 'file', modInfo.name.split(']').slice(-1)[0].trim());
           }
         });
       });
