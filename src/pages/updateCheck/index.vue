@@ -36,6 +36,13 @@
               <span v-text="name"/>
               <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
             </template>
+            <!-- 版本号 -->
+            <template slot="version" slot-scope="version, record">
+              <!-- 版本号加载中 -->
+              <a-spin v-if="!record.versionCheckState" size="small" />
+              <!-- 版本号加载完成 -->
+              <span v-text="version" />
+            </template>
             <!-- 使模组主页可点击跳转 -->
             <template slot="href" slot-scope="href">
               <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
@@ -88,11 +95,12 @@
       /** 表格列头 */
       contentTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
+        { title: '文件名及版本', dataIndex: 'version', scopedSlots: { customRender: 'version' } },
         { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
     methods: {
-      /** 获取文件内容 */
+      /** 获取 README.md 文件内容 */
       async getFileContent() {
         try {
           this.content = await getGitHubFile('/README.md');
@@ -104,8 +112,35 @@
           this.state = 2;
         }
 
-        // 解析文件
-        this.contentJson = this.state === 1 ? this.compileContentToJson() : {};
+        // 如果获取 README.md 文件成功, 那么就解析其内容然后对模组信息进行获取
+        if (this.state === 1) {
+          // 解析文件
+          this.contentJson = this.compileContentToJson();
+          // 获取模组信息
+          try {
+            const modsInfo = (await getGitHubFile('/Minecraft Origin/.minecraft/mods')).filter((data) => data.type === 'file');
+            const { contentJson, menuDataList } = this;
+
+            Object.entries(contentJson).forEach(([type, modsData]) => {
+              const typeLabel = menuDataList.find(({ key }) => key === type).label;
+
+              modsData.forEach((mod) => {
+                const modTitle = mod.title;
+                const modInfo = modsInfo.find(({ name }) => name.includes(`[ ${typeLabel} ]`) && name.includes(`[ ${modTitle} ]`));
+
+                // 未读取到模组信息
+                if (!modInfo) this.$set(mod, 'versionCheckState', 0);
+                // 读取到了模组信息, 获取当前模组版本
+                else {
+                  this.$set(mod, 'versionCheckState', 1);
+                  this.$set(mod, 'version', modInfo.name.split(']').reverse()[0].trim());
+                }
+              });
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
       },
       /** 点击重试按钮 */
       async retryGetFileContent(cycles) {

@@ -1,3 +1,6 @@
+/* eslint-disable brace-style */
+
+
 import ajax from '../lib/ajax';
 
 
@@ -10,8 +13,12 @@ export default async function getGitHubFile(path) {
   /** 返回的结果 */
   let result = '';
 
+  // 如果返回的是数组, 说明读取的是文件列表
+  if (Array.isArray(data)) {
+    result = data;
+  }
   // 如果文件是通过 base64 返回的, 则进行解码
-  if (data.encoding === 'base64') {
+  else if (data.encoding === 'base64') {
     result = decodeURIComponent(escape(atob(data.content)));
   }
 
