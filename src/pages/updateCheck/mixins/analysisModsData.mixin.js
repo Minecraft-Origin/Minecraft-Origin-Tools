@@ -68,7 +68,13 @@ export default {
         const modpackTypeLabel = this.modpackTypeList.find(({ key }) => key === modpackType).label;
 
         modsData.forEach((mod) => {
-          const modTitle = mod.title;
+          let modTitle = mod.title;
+
+          // 前置模组去除前缀, 否则无法匹配到模组信息
+          if (modTitle.includes('[ 前置 ]')) {
+            modTitle = modTitle.split(']').slice(-1)[0].trim();
+          }
+
           const modInfo = files.find(({ name }) => {
             return name.includes(`[ ${modpackTypeLabel} ]`)
                 && name.includes(`[ ${modTitle} ]`);
