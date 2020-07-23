@@ -23,26 +23,25 @@
     </template>
     <!-- 文件加载完成 -->
     <template v-else-if="state === 1">
-      <a-tabs :default-active-key="menuDataList[0].key">
-        <a-tab-pane v-for="menuData in menuDataList" :key="menuData.key" :tab="menuData.label">
+      <a-tabs :default-active-key="modpackTypeList[0].key">
+        <a-tab-pane v-for="menuData in modpackTypeList" :key="menuData.key" :tab="menuData.label">
           <a-table
             size="middle"
             :pagination="false"
-            :columns="contentTableColumns"
-            :data-source="contentJson[menuData.key]"
+            :columns="modsTableColumns"
+            :data-source="modpackData[menuData.key]"
           >
             <!-- 将模组中文名和英文名拼接起来 -->
             <template slot="name" slot-scope="name, record">
               <span v-text="name"/>
               <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
             </template>
-            <!-- 版本号 -->
-            <template slot="version" slot-scope="version, record">
-              <!-- 版本号加载中 -->
-              <a-spin v-if="!record.versionCheckState" size="small" />
-              <!-- 版本号加载完成 -->
-              <span v-text="version" />
-            </template>
+            <!-- 文件名及版本 -->
+            <div class="mod-name-and-version" slot="version" slot-scope="version, record">
+              <!-- 加 载 中 --><a-spin v-if="!record.versionCheckState" size="small" title="文件名及版本加载中" />
+              <!-- 加载失败 --><a-icon v-else-if="record.versionCheckState === 2" type="warning" title="文件名及版本加载失败" />
+              <!-- 加载完成 --><span v-else-if="record.versionCheckState === 1" v-text="version" />
+            </div>
             <!-- 使模组主页可点击跳转 -->
             <template slot="href" slot-scope="href">
               <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
@@ -57,10 +56,12 @@
 <script>
   import './index.scss?insert';
   import getGitHubFile from '../../tools/getGitHubFile';
-  import parseMarkdown from './util/parseMarkdown';
-  import isTableTitle from './util/isTableTitle';
+  import analysisModsDataMixin from './mixins/analysisModsData.mixin';
 
   export default {
+    mixins: [
+      analysisModsDataMixin
+    ],
     data: () => ({
       /**
        * README.md 文件加载状态
@@ -81,65 +82,47 @@
         { label: '重试 10 次', cycles: 10 },
         { label: '重试到成功为止', cycles: Infinity }
       ],
-      /** 菜单数据 */
-      menuDataList: [
+      /** 整合包版本 */
+      modpackTypeList: [
         { label: '基础', key: 'Basis' },
         { label: '基础+', key: 'Basis+' },
         { label: '增强', key: 'Enhance' },
         { label: '极限', key: 'Ultimate_Limit' }
       ],
-      /** README.md 文件内容 */
-      content: '',
-      /** README.md 文件内容 ( JSON 格式 ) */
-      contentJson: {},
+      /** 整合包模组信息数据 */
+      modpackData: {},
       /** 表格列头 */
-      contentTableColumns: [
+      modsTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
         { title: '文件名及版本', dataIndex: 'version', scopedSlots: { customRender: 'version' } },
         { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
     methods: {
-      /** 获取 README.md 文件内容 */
-      async getFileContent() {
+      /** 获取整合包模组数据 */
+      async getModsData() {
+        let readmeContent;
+
+        // 读取 README.md 文件内容, 获取模组基本信息
         try {
-          this.content = await getGitHubFile('/README.md');
+          readmeContent = await getGitHubFile('/README.md');
           this.stateError = null;
           this.state = 1;
         } catch (error) {
-          this.content = '';
           this.stateError = error;
           this.state = 2;
         }
 
-        // 如果获取 README.md 文件成功, 那么就解析其内容然后对模组信息进行获取
+        // 如果获取 README.md 文件成功, 那么就解析其内容然后对模组其余相关信息进行获取
         if (this.state === 1) {
-          // 解析文件
-          this.contentJson = this.compileContentToJson();
-          // 获取模组信息
-          try {
-            const modsInfo = (await getGitHubFile('/Minecraft Origin/.minecraft/mods')).filter((data) => data.type === 'file');
-            const { contentJson, menuDataList } = this;
-
-            Object.entries(contentJson).forEach(([type, modsData]) => {
-              const typeLabel = menuDataList.find(({ key }) => key === type).label;
-
-              modsData.forEach((mod) => {
-                const modTitle = mod.title;
-                const modInfo = modsInfo.find(({ name }) => name.includes(`[ ${typeLabel} ]`) && name.includes(`[ ${modTitle} ]`));
-
-                // 未读取到模组信息
-                if (!modInfo) this.$set(mod, 'versionCheckState', 0);
-                // 读取到了模组信息, 获取当前模组版本
-                else {
-                  this.$set(mod, 'versionCheckState', 1);
-                  this.$set(mod, 'version', modInfo.name.split(']').reverse()[0].trim());
-                }
-              });
+          // 解析 README.md 文件
+          this.modpackData = this.analysisModsData(readmeContent);
+          // 读取模组列表, 获取模组其余相关信息
+          getGitHubFile('/Minecraft Origin/.minecraft/mods').then(this.analysisModsFileInfo).catch((error) => {
+            [].concat(...Object.values(this.modpackData)).forEach((mod) => {
+              this.$set(mod, 'versionCheckState', 2);
             });
-          } catch (error) {
-            console.log(error);
-          }
+          });
         }
       },
       /** 点击重试按钮 */
@@ -150,54 +133,16 @@
 
         for (let i = 0; i < cycles; i++) {
           this.retryCount++;
-          await this.getFileContent(); // eslint-disable-line no-await-in-loop
+          await this.getModsData(); // eslint-disable-line no-await-in-loop
           if (this.state === 1) break;
         }
 
         this.retryCount = 0;
         this.retryActiveButtonIndex = null;
-      },
-      /** 解析 README.md 文件为 JSON 格式 */
-      compileContentToJson() {
-        const contentJson = {};
-        const tokensList = parseMarkdown(this.content);
-
-        this.menuDataList.forEach((menuData) => {
-          const tableTitleIndex = tokensList.findIndex((token) => token.type === 'html' && isTableTitle(menuData.label, token.text));
-          const tableTokens = tokensList[tableTitleIndex + 1];
-          const tableData = contentJson[menuData.key] = [];
-
-          // 遍历出数据
-          tableTokens.tokens.cells.forEach(([data]) => {
-            /** 中文名称, 原始名称, 模组主页 */
-            let title = ''; let subTitle = ''; let href = '';
-
-            data.forEach((item) => {
-              switch (item.type) {
-                case 'text': title += item.text; break;
-                case 'link': subTitle = item.text; href = item.href; break;
-                default:
-              }
-            });
-
-            // 去除中文名称和原始名称中间的连接符
-            title = title.replace(/\s*-\s*$/, '').trim();
-            // 转义符号
-            title = title.replace('&#39;', '\'').trim();
-
-            tableData.push({
-              title,
-              subTitle,
-              href
-            });
-          });
-        });
-
-        return contentJson;
       }
     },
     mounted() {
-      this.getFileContent();
+      this.getModsData();
     }
   };
 </script>

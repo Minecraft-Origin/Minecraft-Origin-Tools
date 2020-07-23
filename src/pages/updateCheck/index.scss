@@ -23,5 +23,11 @@
         z-index: 666;
       }
     }
+
+    // 文件名及版本
+    .mod-name-and-version{
+      display: grid;
+      place-content: center;
+    }
   }
 }
