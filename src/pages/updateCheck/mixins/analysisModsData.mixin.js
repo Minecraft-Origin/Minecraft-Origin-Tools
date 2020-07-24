@@ -1,3 +1,6 @@
+/* eslint-disable brace-style */
+
+
 import parseMarkdown from '../util/parseMarkdown';
 import isTableTitle from '../util/isTableTitle';
 
@@ -74,7 +77,13 @@ export default {
           if (modTitle.includes('[ 前置 ]')) {
             modTitle = modTitle.split(']').slice(-1)[0].trim();
           }
+          // 一个大模组下的不同分支小模组, 在 README.md 和在模组文件夹下, 命名规则是不一样的
+          else if (/^([^(]+)\(([^)]+)\)$/.test(modTitle)) {
+            // `XXXX ( YY )` -> `XXXX - YY`
+            modTitle = modTitle.replace(/\s/g, '').replace(/^([^(]+)\(([^)]+)\)$/, '$1 - $2');
+          }
 
+          // 遍历读取模组信息
           const modInfo = files.find(({ name }) => {
             return name.includes(`[ ${modpackTypeLabel} ]`)
                 && name.includes(`[ ${modTitle} ]`);
