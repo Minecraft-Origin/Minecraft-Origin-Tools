@@ -23,7 +23,7 @@ module.exports = {
   mode: HU_RUNNING_COMMAND === 'build',
 
   inputDir: 'src',
-  outputDir: 'client',
+  outputDir: HU_RUNNING_COMMAND === 'build' ? 'docs' : 'client',
 
   replace: {
     'process.env.NODE_ENV': JSON.stringify(HU_RUNNING_COMMAND === 'build' ? 'production' : 'development')
