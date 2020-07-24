@@ -23,7 +23,7 @@
     </template>
     <!-- 文件加载完成 -->
     <template v-else-if="state === 1">
-      <a-tabs :default-active-key="modpackTypeList[0].key">
+      <a-tabs ref="tabs" :default-active-key="modpackTypeList[0].key" @change="onChangeTabs">
         <a-tab-pane v-for="menuData in modpackTypeList" :key="menuData.key" :tab="menuData.label">
           <a-table
             size="middle"
@@ -139,6 +139,12 @@
 
         this.retryCount = 0;
         this.retryActiveButtonIndex = null;
+      },
+      /** 切换 Tab 时, 使滚动条回到最顶上 */
+      onChangeTabs() {
+        const tabsVm = this.$refs.tabs;
+        const tabsEl = tabsVm.$el;
+        tabsEl.scrollIntoView();
       }
     },
     mounted() {
