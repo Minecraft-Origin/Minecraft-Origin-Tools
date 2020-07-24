@@ -4,7 +4,7 @@
 import ajax from '../lib/ajax';
 
 
-const githubFileAPI = 'https://api.github.com/repos/Zhang-Wei-666/Minecraft-Origin/contents';
+const githubFileAPI = 'https://api.github.com/repos/Minecraft-Origin/Minecraft-Origin/contents';
 
 
 export default async function getGitHubFile(path) {
