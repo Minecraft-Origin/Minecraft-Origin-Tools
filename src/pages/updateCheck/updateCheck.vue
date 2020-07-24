@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import './index.scss?insert';
+  import './updateCheck.scss?insert';
   import getGitHubFile from '../../tools/getGitHubFile';
   import analysisModsDataMixin from './mixins/analysisModsData.mixin';
 

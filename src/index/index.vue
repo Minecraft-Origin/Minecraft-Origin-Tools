@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import UpdateCheck from '../pages/updateCheck/index.vue';
+  import UpdateCheck from '../pages/updateCheck/updateCheck.vue';
   import './index.scss?insert';
 
   export default {
