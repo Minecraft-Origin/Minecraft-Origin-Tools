@@ -85,7 +85,7 @@ export default {
           // 读取到了模组信息, 获取当前模组文件名及版本
           else {
             this.$set(mod, 'nameGetState', 1);
-            this.$set(mod, 'file', modInfo.name.split(']').slice(-1)[0].trim());
+            this.$set(mod, 'file', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
           }
         });
       });
