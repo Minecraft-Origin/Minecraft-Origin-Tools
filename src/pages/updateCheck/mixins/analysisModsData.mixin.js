@@ -83,16 +83,19 @@ export default {
             modTitle = modTitle.replace(/\s/g, '').replace(/^([^(]+)\(([^)]+)\)$/, '$1 - $2');
           }
 
-          // 遍历读取模组信息
-          const modInfo = files.find(({ name }) => {
+          // 遍历所有的模组数据读取模组信息位置
+          const modInfoIndex = files.findIndex(({ name }) => {
             return name.includes(`[ ${modpackTypeLabel} ]`)
                 && name.includes(`[ ${modTitle} ]`);
           });
 
           // 未读取到模组信息
-          if (!modInfo) this.$set(mod, 'nameGetState', 2);
+          if (modInfoIndex < 0) this.$set(mod, 'nameGetState', 2);
           // 读取到了模组信息, 获取当前模组文件名及版本
           else {
+            // 获取并删除模组信息, 减少之后读取模组信息时的遍历次数
+            const modInfo = files.splice(modInfoIndex, 1)[0];
+
             this.$set(mod, 'nameGetState', 1);
             this.$set(mod, 'file', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
           }
