@@ -7,6 +7,10 @@ import ajax from '../lib/ajax';
 const githubFileAPI = 'https://api.github.com/repos/Minecraft-Origin/Minecraft-Origin/contents';
 
 
+/**
+ * 获取 Minecraft-Origin 仓库下的文件或文件夹信息
+ * @param {string} path 文件或路径地址
+ */
 export default async function getGitHubFile(path) {
   /** 后台返回的文件信息 */
   const data = await ajax(`${githubFileAPI}/${path}?_=${+(new Date())}`);
