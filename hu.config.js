@@ -45,7 +45,7 @@ module.exports = {
 
   pipe: [
     {
-      input: 'index/index.js',
+      input: 'index.js',
       output: 'index/index.js'
     }
   ]
