@@ -7,6 +7,7 @@ import isTableTitle from '../util/isTableTitle';
 
 export default {
   methods: {
+
     /**
      * 解析 README.md 文件内容, 得到所有模组信息
      * @param {string} readmeContent README.md 文件内容
@@ -57,6 +58,7 @@ export default {
 
       return modpackData;
     },
+
     /**
      * 解析模组文件夹内的模组, 获取模组其余相关信息
      * @param {*} contentList 模组文件夹内的文件及文件夹列表
@@ -102,5 +104,6 @@ export default {
         });
       });
     }
+
   }
 };

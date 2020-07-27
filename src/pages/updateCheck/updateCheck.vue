@@ -23,7 +23,7 @@
     </template>
     <!-- 文件加载完成 -->
     <template v-else-if="state === 1">
-      <a-tabs ref="tabs" :default-active-key="modpackTypeList[0].key" @change="onChangeTabs">
+      <a-tabs ref="tabs" v-model="tabsActiveKey" @change="onChangeTabs">
         <a-tab-pane v-for="menuData in modpackTypeList" :key="menuData.key" :tab="menuData.label">
           <a-table
             size="middle"
@@ -38,9 +38,15 @@
             </template>
             <!-- 文件名及版本 -->
             <template slot="file" slot-scope="file, record">
-              <!-- 加 载 中 --><a-spin v-if="!record.nameGetState" size="small" title="文件名及版本加载中" />
-              <!-- 加载失败 --><a-icon v-else-if="record.nameGetState === 2" type="warning" title="文件名及版本加载失败" />
-              <!-- 加载完成 --><span v-else-if="record.nameGetState === 1" v-text="file" />
+              <div ref="files" :record.prop="record">
+                <!-- 加 载 中 --><a-spin v-if="!record.nameGetState" size="small" title="文件名及版本加载中" />
+                <!-- 加载失败 --><a-icon v-else-if="record.nameGetState === 2" type="warning" title="文件名及版本加载失败" />
+                <!-- 加载完成 -->
+                <template v-else-if="record.nameGetState === 1">
+                  <!-- 整合包内模组名称及版本 --><div><a-icon type="file" /> {{ file }}</div>
+                  <!-- 最新模组名称及版本 --><div v-if="record.updateFile"><a-icon type="fire" /> {{ record.updateFile }}</div>
+                </template>
+              </div>
             </template>
             <!-- 使模组主页可点击跳转 -->
             <template slot="href" slot-scope="href">
@@ -92,6 +98,8 @@
       ],
       /** 整合包模组信息数据 */
       modpackData: {},
+      /** 当前标签页激活面板的 key */
+      tabsActiveKey: '',
       /** 表格列头 */
       modsTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
@@ -115,7 +123,7 @@
         this.retryCount = 0;
         this.retryActiveButtonIndex = null;
       },
-      /** 切换 Tab 时, 使滚动条回到最顶上 */
+      /** 切换标签页时, 使滚动条回到最顶上 */
       onChangeTabs() {
         const tabsVm = this.$refs.tabs;
         const tabsEl = tabsVm.$el;
