@@ -1,3 +1,7 @@
+/* eslint-disable brace-style */
+
+
+import findLastIndex from 'lodash/findLastIndex';
 import getGitHubFile from '../../../tools/getGitHubFile';
 import ajax from '../../../lib/ajax';
 import delay from '../../../tools/delay';
@@ -61,14 +65,35 @@ export default {
 
       for (const mod of modsData) {
         try {
-          const modInfo = await this.getModUpdateData(mod.href); // eslint-disable-line no-await-in-loop
-          const modVersions = modInfo.versions;
+          const { files: modFiles, versions: modVersions } = await this.getModUpdateData(mod.href); // eslint-disable-line no-await-in-loop
+          let index;
+          let updateFile;
 
-          if (modVersions['1.12.2']) {
-            this.$set(mod, 'updateFile', modVersions['1.12.2'].slice(-1)[0].name);
+
+          // 先到 files 对象里查找最新版本文件 ( 1.12.2 )
+          if ((index = findLastIndex(modFiles, ({ versions }) => versions.includes('1.12.2'))) > -1) {
+            updateFile = modFiles[index].name;
+          }
+          // 如果没找到, 就到 versions 对象里去查找 ( 1.12.2 )
+          else if (modVersions['1.12.2']) {
+            updateFile = modVersions['1.12.2'].slice(-1)[0].name;
+          }
+          // 如果没找到, 就再到 files 对象里查找最新版本文件 ( 1.12 )
+          else if ((index = findLastIndex(modFiles, ({ versions }) => versions.includes('1.12'))) > -1) {
+            updateFile = modFiles[index].name;
+          }
+          // 如果没找到, 就再到 versions 对象里去查找 ( 1.12 )
+          else if (modVersions['1.12']) {
+            updateFile = modVersions['1.12'].slice(-1)[0].name;
+          }
+
+          if (updateFile) {
+            this.$set(mod, 'updateFile', updateFile);
+          } else {
+            console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组未检测到对应版本: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`);
           }
         } catch (error) {
-          console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组检测更新失败: ${mod.href}, ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`, error);
+          console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组检测更新失败: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`, error);
         }
       }
     },

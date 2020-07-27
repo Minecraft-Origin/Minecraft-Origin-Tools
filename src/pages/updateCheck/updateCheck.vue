@@ -103,7 +103,7 @@
       /** 表格列头 */
       modsTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
-        { title: '文件名及版本', dataIndex: 'file', width: '24em', scopedSlots: { customRender: 'file' } },
+        { title: '文件名及版本', dataIndex: 'file', width: '26em', scopedSlots: { customRender: 'file' } },
         { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
