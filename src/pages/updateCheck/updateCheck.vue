@@ -43,8 +43,14 @@
                 <!-- 加载失败 --><a-icon v-else-if="record.nameGetState === 2" type="warning" title="文件名及版本加载失败" />
                 <!-- 加载完成 -->
                 <template v-else-if="record.nameGetState === 1">
-                  <!-- 整合包内模组名称及版本 --><div><a-icon type="file" /> {{ file }}</div>
-                  <!-- 最新模组名称及版本 --><div v-if="record.updateFile"><a-icon type="fire" /> {{ record.updateFile }}</div>
+                  <!-- 整合包内模组名称及版本 -->
+                  <div :class="record.updateFile ? `color-${ file === record.updateFile ? 'success' : 'warning' }` : ''">
+                    <a-icon type="file" /> {{ file }}
+                  </div>
+                  <!-- 最新模组名称及版本 -->
+                  <div v-if="record.updateFile && file !== record.updateFile" class="color-error">
+                    <a-icon type="fire" /> {{ record.updateFile }}
+                  </div>
                 </template>
               </div>
             </template>
@@ -103,7 +109,7 @@
       /** 表格列头 */
       modsTableColumns: [
         { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
-        { title: '文件名及版本', dataIndex: 'file', width: '26em', scopedSlots: { customRender: 'file' } },
+        { title: '文件名及版本', dataIndex: 'file', width: '28em', scopedSlots: { customRender: 'file' } },
         { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
       ]
     }),
