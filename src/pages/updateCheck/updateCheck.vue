@@ -44,7 +44,7 @@
                 <!-- 加载完成 -->
                 <template v-else-if="record.nameGetState === 1">
                   <!-- 整合包内模组名称及版本 -->
-                  <div :class="record.updateFile ? `color-${ file === record.updateFile ? 'success' : 'warning' }` : ''">
+                  <div :class="record.updateFile && `color-${ file === record.updateFile ? 'success' : 'warning' }`">
                     <a-icon type="file" /> {{ file }}
                   </div>
                   <!-- 最新模组名称及版本 -->

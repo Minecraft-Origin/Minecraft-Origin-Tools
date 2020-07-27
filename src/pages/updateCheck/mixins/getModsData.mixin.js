@@ -1,7 +1,6 @@
 /* eslint-disable brace-style */
 
 
-import findLastIndex from 'lodash/findLastIndex';
 import getGitHubFile from '../../../tools/getGitHubFile';
 import ajax from '../../../lib/ajax';
 import delay from '../../../tools/delay';
@@ -66,29 +65,10 @@ export default {
       for (const mod of modsData) {
         try {
           const { files: modFiles, versions: modVersions } = await this.getModUpdateData(mod.href); // eslint-disable-line no-await-in-loop
-          let index;
-          let updateFile;
+          const updateFileData = this.findUpdateFileData(modFiles, modVersions, '1.12.2');
 
-
-          // 先到 files 对象里查找最新版本文件 ( 1.12.2 )
-          if ((index = findLastIndex(modFiles, ({ versions }) => versions.includes('1.12.2'))) > -1) {
-            updateFile = modFiles[index].name;
-          }
-          // 如果没找到, 就到 versions 对象里去查找 ( 1.12.2 )
-          else if (modVersions['1.12.2']) {
-            updateFile = modVersions['1.12.2'].slice(-1)[0].name;
-          }
-          // 如果没找到, 就再到 files 对象里查找最新版本文件 ( 1.12 )
-          else if ((index = findLastIndex(modFiles, ({ versions }) => versions.includes('1.12'))) > -1) {
-            updateFile = modFiles[index].name;
-          }
-          // 如果没找到, 就再到 versions 对象里去查找 ( 1.12 )
-          else if (modVersions['1.12']) {
-            updateFile = modVersions['1.12'].slice(-1)[0].name;
-          }
-
-          if (updateFile) {
-            this.$set(mod, 'updateFile', updateFile);
+          if (updateFileData) {
+            this.$set(mod, 'updateFile', updateFileData.name);
           } else {
             console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组未检测到对应版本: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`);
           }
@@ -111,8 +91,37 @@ export default {
         return this.getModUpdateData(href);
       }
       return modInfo;
-    }
+    },
 
+    /**
+     * 从模组信息中查找传入模组的最新版本
+     * @param {array} modFiles 模组信息 files 数组
+     * @param {{}} modVersions 模组信息 versions 数组
+     * @param {string} version 需要查找的游戏版本号
+     */
+    findUpdateFileData(modFiles, modVersions, version) {
+      let updateFileData;
+
+      // 过滤游戏版本号
+      modFiles = modFiles.filter(({ versions }) => versions.includes(version));
+      modVersions = modVersions[version];
+
+      // 如果在 files 数组中找到了对应游戏版本号的模组
+      // 则按照时间排序并取出最新的一个
+      if (modFiles.length) {
+        [updateFileData] = modFiles.sort((a, b) => {
+          return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
+        });
+      }
+      // 在 versions 数组中继续查找
+      else if (modVersions && modVersions.length) {
+        [updateFileData] = modVersions.sort((a, b) => {
+          return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
+        });
+      }
+
+      return updateFileData;
+    }
 
   }
 };
