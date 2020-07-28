@@ -1,18 +1,58 @@
 /* eslint-disable brace-style */
 
 
+import getGitHubFile from '../util/getGitHubFile';
 import parseMarkdown from '../util/parseMarkdown';
 import isTableTitle from '../util/isTableTitle';
+
+
+/**
+ * mod.getModFilenameState: 当前模组的加载文件名状态
+ *   case 1:  加载完成
+ *   case 2:  加载失败
+ *   default: 加载中
+ */
 
 
 export default {
   methods: {
 
     /**
+     * 获取整合包内的模组信息
+     */
+    async getModpackData() {
+      let readmeContent;
+
+      // 读取 README.md 文件内容, 获取模组基本信息
+      try {
+        readmeContent = await getGitHubFile('/README.md');
+        this.stateError = null;
+        this.state = 1;
+      } catch (error) {
+        this.stateError = error;
+        this.state = 2;
+      }
+
+      // 如果获取 README.md 文件成功, 那么就解析其内容然后对模组其余相关信息进行获取
+      if (this.state === 1) {
+        // 显示第一个 Tab 页
+        this.tabsActiveKey = this.modpackTypeList[0].key;
+        // 解析 README.md 文件
+        this.modpackData = this.analysisModpackData(readmeContent);
+        // 读取模组列表, 获取模组其余相关信息
+        getGitHubFile('/Minecraft Origin/.minecraft/mods').then(this.analysisModsFileInfo).catch((error) => {
+          [].concat(...Object.values(this.modpackData)).forEach((mod) => {
+            this.$set(mod, 'getModFilenameState', 2);
+          });
+        });
+      }
+    },
+
+    /**
      * 解析 README.md 文件内容, 得到所有模组信息
      * @param {string} readmeContent README.md 文件内容
      */
-    analysisModsData(readmeContent) {
+    analysisModpackData(readmeContent) {
       const modpackData = {};
       const tokensList = parseMarkdown(readmeContent);
 
@@ -92,14 +132,14 @@ export default {
           });
 
           // 未读取到模组信息
-          if (modInfoIndex < 0) this.$set(mod, 'nameGetState', 2);
+          if (modInfoIndex < 0) this.$set(mod, 'getModFilenameState', 2);
           // 读取到了模组信息, 获取当前模组文件名及版本
           else {
             // 获取并删除模组信息, 减少之后读取模组信息时的遍历次数
             const modInfo = files.splice(modInfoIndex, 1)[0];
 
-            this.$set(mod, 'nameGetState', 1);
-            this.$set(mod, 'file', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
+            this.$set(mod, 'getModFilenameState', 1);
+            this.$set(mod, 'filename', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
           }
         });
       });

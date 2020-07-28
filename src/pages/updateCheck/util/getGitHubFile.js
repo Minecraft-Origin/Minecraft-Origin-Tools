@@ -1,7 +1,7 @@
 /* eslint-disable brace-style */
 
 
-import ajax from '../lib/ajax';
+import ajax from '../../../lib/ajax';
 
 
 const githubFileAPI = 'https://api.github.com/repos/Minecraft-Origin/Minecraft-Origin/contents';
