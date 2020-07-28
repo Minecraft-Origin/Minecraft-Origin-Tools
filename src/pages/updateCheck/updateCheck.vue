@@ -60,13 +60,16 @@
   import './updateCheck.scss?insert';
   import getModpackDataMixin from './mixins/getModpackData.mixin';
   import checkModUpdateMixin from './mixins/checkModUpdate.mixin';
+  import renderMixin from './mixins/render.mixin';
 
   export default {
     mixins: [
       // 获取整合包数据相关
       getModpackDataMixin,
       // 检测模组更新相关
-      checkModUpdateMixin
+      checkModUpdateMixin,
+      // 页面渲染函数
+      renderMixin
     ],
     data() {
       return {
