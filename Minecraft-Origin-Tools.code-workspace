@@ -25,6 +25,9 @@
     "editor.detectIndentation": false,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
+    },
+    "search.exclude": {
+      "docs": true
     }
   }
 }
