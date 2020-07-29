@@ -16,7 +16,10 @@ import getModLatestInfo from '../util/getModLatestInfo';
 
 
 export default {
-
+  data: () => ({
+    /** 检测更新时, 需要查找的版本 */
+    __checkVersions: ['1.12.2', '1.12']
+  }),
   methods: {
 
     /**
@@ -35,22 +38,29 @@ export default {
       }
 
       if (modLatestInfo) {
-        const modFiles = modLatestInfo.files.filter(({ versions }) => versions.includes('1.12.2'));
-        const modVersions = modLatestInfo.versions['1.12.2'];
+        let modFiles;
+        let modVersions;
         let modLatestData;
 
-        // 如果在 files 数组中找到了对应游戏版本号的模组
-        // 则按照时间排序并取出最新的一个
-        if (modFiles.length) {
-          [modLatestData] = modFiles.sort((a, b) => {
-            return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
-          });
-        }
-        // 在 versions 数组中继续查找
-        else if (modVersions && modVersions.length) {
-          [modLatestData] = modVersions.sort((a, b) => {
-            return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
-          });
+        for (const checkVersion of this.$data.__checkVersions) {
+          modFiles = modLatestInfo.files.filter(({ versions }) => versions.includes(checkVersion));
+          modVersions = modLatestInfo.versions[checkVersion];
+
+          // 如果在 files 数组中找到了对应游戏版本号的模组
+          // 则按照时间排序并取出最新的一个
+          if (modFiles.length) {
+            [modLatestData] = modFiles.sort((a, b) => {
+              return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
+            });
+            break;
+          }
+          // 在 versions 数组中继续查找
+          else if (modVersions && modVersions.length) {
+            [modLatestData] = modVersions.sort((a, b) => {
+              return (new Date(b.uploaded_at)) - (new Date(a.uploaded_at));
+            });
+            break;
+          }
         }
 
         // 找到了最新的模组信息
