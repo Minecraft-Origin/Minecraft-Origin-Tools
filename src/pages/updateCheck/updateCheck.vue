@@ -36,15 +36,6 @@
               <span v-text="name"/>
               <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
             </template>
-            <!-- 文件名及版本 -->
-            <div slot="filename" slot-scope="filename, record" :record.prop="record">
-              <!-- 加 载 中 --><a-spin v-if="!record.getModFilenameState" size="small" title="文件名及版本加载中" />
-              <!-- 加载失败 --><a-icon v-else-if="record.getModFilenameState === 2" type="warning" title="文件名及版本加载失败" />
-              <!-- 加载完成 -->
-              <template v-else-if="record.getModFilenameState === 1">
-                <div>{{ filename }}</div>
-              </template>
-            </div>
             <!-- 使模组主页可点击跳转 -->
             <template slot="href" slot-scope="href">
               <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
@@ -106,8 +97,8 @@
         /** 表格列头 */
         modsTableColumns: [
           { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
-          { title: '文件名及版本', dataIndex: 'filename', width: '28em', scopedSlots: { customRender: 'filename' } },
-          { title: '检测更新', dataIndex: 'checkModUpdateState', width: '88px', align: 'center', customRender: this.renderUpdateCheckButton },
+          { title: '文件名及版本', dataIndex: 'getModFilenameState', width: '28em', customRender: this.renderTableFilename },
+          { title: '检测更新', dataIndex: 'checkModUpdateState', width: '88px', align: 'center', customRender: this.renderTableUpdateCheckButton },
           { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
         ]
       };
