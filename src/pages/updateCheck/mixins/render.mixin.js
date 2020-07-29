@@ -43,7 +43,7 @@ export default {
 
     /**
      * 渲染表格中 "文件名及版本" 列内容
-     * @param {string} getModFilenameState 当前模组的加载文件名状态
+     * @param {number} getModFilenameState 当前模组的加载文件名状态
      * @param {{}} mod 当前模组数据对象
      */
     renderTableFilenameColumn(getModFilenameState, mod) {
