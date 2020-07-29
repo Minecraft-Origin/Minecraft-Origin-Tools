@@ -25,22 +25,7 @@
     <template v-else-if="state === 1">
       <a-tabs ref="tabs" v-model="tabsActiveKey" @change="onChangeTabs">
         <a-tab-pane v-for="menuData in modpackTypeList" :key="menuData.key" :tab="menuData.label">
-          <a-table
-            size="middle"
-            :pagination="false"
-            :columns="modsTableColumns"
-            :data-source="modpackData[menuData.key]"
-          >
-            <!-- 将模组中文名和英文名拼接起来 -->
-            <template slot="name" slot-scope="name, record">
-              <span v-text="name"/>
-              <span v-if="record.subTitle && !name.includes(record.subTitle)">- {{ record.subTitle }}</span>
-            </template>
-            <!-- 使模组主页可点击跳转 -->
-            <template slot="href" slot-scope="href">
-              <a v-if="href" target="_blank" rel="noreferrer" :href="href" v-text="href" />
-            </template>
-          </a-table>
+          <a-table size="middle" :pagination="false" :columns="modsTableColumns" :data-source="modpackData[menuData.key]" />
         </a-tab-pane>
       </a-tabs>
     </template>
@@ -96,10 +81,10 @@
         tabsActiveKey: '',
         /** 表格列头 */
         modsTableColumns: [
-          { title: '名称', dataIndex: 'title', width: '28em', scopedSlots: { customRender: 'name' } },
-          { title: '文件名及版本', dataIndex: 'getModFilenameState', width: '28em', customRender: this.renderTableFilename },
+          { title: '名称', dataIndex: 'name', width: '28em', customRender: this.renderTableNameColumn },
+          { title: '文件名及版本', dataIndex: 'getModFilenameState', width: '28em', customRender: this.renderTableFilenameColumn },
           { title: '检测更新', dataIndex: 'checkModUpdateState', width: '88px', align: 'center', customRender: this.renderTableUpdateCheckButton },
-          { title: '模组主页', dataIndex: 'href', scopedSlots: { customRender: 'href' } }
+          { title: '模组主页', dataIndex: 'href', customRender: this.renderTableHomeColumn }
         ]
       };
     },

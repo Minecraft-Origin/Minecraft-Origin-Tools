@@ -68,29 +68,29 @@ export default {
         // 遍历出该整合包版本下的模组
         tableTokens.tokens.cells.forEach(([data]) => {
           /** 中文名称 */
-          let title = '';
+          let name = '';
           /** 原始名称 */
-          let subTitle = '';
+          let subName = '';
           /** 模组主页 */
           let href = '';
 
           data.forEach((item) => {
             switch (item.type) {
-              case 'text': title += item.text; break;
-              case 'link': subTitle = item.text; href = item.href; break;
+              case 'text': name += item.text; break;
+              case 'link': subName = item.text; href = item.href; break;
               default:
             }
           });
 
           // 去除中文名称和原始名称中间的连接符
-          title = title.replace(/\s*-\s*$/, '').trim();
+          name = name.replace(/\s*-\s*$/, '').trim();
           // 转义符号
-          title = title.replace('&#39;', '\'').trim();
+          name = name.replace('&#39;', '\'').trim();
 
           // 保存基础模组信息
           tableData.push({
-            title,
-            subTitle,
+            name,
+            subName,
             href
           });
         });
@@ -113,7 +113,7 @@ export default {
         const modpackTypeLabel = this.modpackTypeList.find(({ key }) => key === modpackType).label;
 
         modsData.forEach((mod) => {
-          let modTitle = mod.title;
+          let modTitle = mod.name;
 
           // 前置模组去除前缀, 否则无法匹配到模组信息
           if (modTitle.includes('[ 前置 ]')) {

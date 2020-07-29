@@ -33,8 +33,8 @@ export default {
         modLatestInfo = await getModLatestInfo(mod.href);
       } catch (error) {
         this.$set(mod, 'checkModUpdateState', 4);
-        this.$notification.error({ key: mod.filename, message: `${mod.title} - ${mod.subTitle}`, description: '模组检测更新失败' });
-        console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组检测更新失败: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`, error);
+        this.$notification.error({ key: mod.filename, message: `${mod.name} - ${mod.subName}`, description: '模组检测更新失败' });
+        console.error(`[ ${mod.name} - ${mod.subName} ] 模组检测更新失败: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`, error);
       }
 
       if (modLatestInfo) {
@@ -69,8 +69,8 @@ export default {
           this.$set(mod, 'updateFilename', modLatestData.name);
         } else {
           this.$set(mod, 'checkModUpdateState', 5);
-          this.$notification.error({ key: mod.filename, message: `${mod.title} - ${mod.subTitle}`, description: '模组未检测到对应版本' });
-          console.error(`[ ${mod.title} - ${mod.subTitle} ] 模组未检测到对应版本: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`);
+          this.$notification.error({ key: mod.filename, message: `${mod.name} - ${mod.subName}`, description: '模组未检测到对应版本' });
+          console.error(`[ ${mod.name} - ${mod.subName} ] 模组未检测到对应版本: ${mod.href} ${mod.href.replace('www.curseforge.com', 'api.cfwidget.com')}\n`);
         }
       }
     }

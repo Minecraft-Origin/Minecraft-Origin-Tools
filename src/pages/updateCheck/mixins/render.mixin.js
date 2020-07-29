@@ -30,11 +30,23 @@ export default {
   methods: {
 
     /**
+     * 渲染表格中 "名称" 列内容
+     * @param {string} name 模组名称
+     * @param {{}} mod 当前模组数据对象
+     */
+    renderTableNameColumn(name, { subName }) {
+      return [
+        name,
+        subName && !name.includes(subName) && `- ${subName}`
+      ];
+    },
+
+    /**
      * 渲染表格中 "文件名及版本" 列内容
      * @param {string} getModFilenameState 当前模组的加载文件名状态
      * @param {{}} mod 当前模组数据对象
      */
-    renderTableFilename(getModFilenameState, mod) {
+    renderTableFilenameColumn(getModFilenameState, mod) {
       const h = this.$createElement;
 
       switch (getModFilenameState) {
@@ -105,6 +117,23 @@ export default {
           }
         }
       }, mod.filename ? '' : '...');
+    },
+
+    /**
+     * 渲染表格中 "模组主页" 列内容
+     * @param {string} href 模组主页
+     * @param {{}} mod 当前模组数据对象
+     */
+    renderTableHomeColumn(href, mod) {
+      if (href) {
+        return this.$createElement('a', {
+          attrs: {
+            href,
+            target: '_blank',
+            rel: 'noreferrer'
+          }
+        }, href);
+      }
     }
 
   }
