@@ -56,7 +56,7 @@ export default {
         // 找到了最新的模组信息
         if (modLatestData) {
           this.$set(mod, 'checkModUpdateState', modLatestData.name === mod.filename ? 1 : 2);
-          this.$set(mod, 'updateFile', modLatestData.name);
+          this.$set(mod, 'updateFilename', modLatestData.name);
         } else {
           this.$set(mod, 'checkModUpdateState', 5);
           this.$notification.error({ key: mod.filename, message: `${mod.title} - ${mod.subTitle}`, description: '模组未检测到对应版本' });

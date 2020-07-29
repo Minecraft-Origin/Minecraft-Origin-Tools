@@ -14,6 +14,19 @@
  */
 
 export default {
+  data: () => ({
+    /** 不同检测更新状态下, 文件名及版本列的样式及图标 */
+    __renderFilenameConfig: {
+      1: {
+        filenameClass: 'color-success',
+        filenameIcon: 'check-circle'
+      },
+      2: {
+        filenameClass: 'color-warning',
+        filenameIcon: 'info-circle'
+      }
+    }
+  }),
   methods: {
 
     /**
@@ -25,7 +38,25 @@ export default {
       const h = this.$createElement;
 
       switch (getModFilenameState) {
-        case 1: return h('div', null, mod.filename);
+        case 1: {
+          const { checkModUpdateState } = mod;
+          const { filenameClass, filenameIcon } = this.$data.__renderFilenameConfig[checkModUpdateState] || {};
+
+          return [
+            h('div', { staticClass: filenameClass }, [
+              filenameIcon && h('a-icon', {
+                attrs: { type: filenameIcon }
+              }),
+              h('span', null, ` ${mod.filename}`)
+            ]),
+            checkModUpdateState === 2 && h('div', { staticClass: 'color-error' }, [
+              h('a-icon', {
+                attrs: { type: 'check-circle' }
+              }),
+              h('span', null, ` ${mod.updateFilename}`)
+            ])
+          ];
+        }
         case 2: return h('a-icon', {
           attrs: { type: 'warning', title: '文件名及版本加载失败' }
         });
