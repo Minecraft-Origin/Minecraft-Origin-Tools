@@ -63,11 +63,11 @@ export default {
                 ]),
                 h('div', null, [
                   h('b', null, '更新日志: '),
-                  h('a', { attrs: { href: mod.updateFilenameChangelogUrl, target: '_blank', rel: 'noreferrer' } }, mod.updateFilenameChangelogUrl)
+                  h('safe-a', { attrs: { href: mod.updateFilenameChangelogUrl } })
                 ]),
                 h('div', null, [
                   h('b', null, '下载地址: '),
-                  h('a', { attrs: { href: mod.updateFilenameDownloadUrl, target: '_blank', rel: 'noreferrer' } }, mod.updateFilenameDownloadUrl)
+                  h('safe-a', { attrs: { href: mod.updateFilenameDownloadUrl } })
                 ])
               ])
             ]);
@@ -137,13 +137,9 @@ export default {
      */
     renderTableHomeColumn(href, mod) {
       if (href) {
-        return this.$createElement('a', {
-          attrs: {
-            href,
-            target: '_blank',
-            rel: 'noreferrer'
-          }
-        }, href);
+        return this.$createElement('safe-a', {
+          attrs: { href }
+        });
       }
     }
 
