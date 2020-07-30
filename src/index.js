@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueDesignVue, { notification } from 'ant-design-vue';
-import Index from './index/index.vue';
+import Index from './pages/index/index.vue';
 import './styles/utils.scss?insert';
 
 
