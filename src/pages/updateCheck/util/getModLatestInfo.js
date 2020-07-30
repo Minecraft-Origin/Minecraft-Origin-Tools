@@ -1,4 +1,4 @@
-import ajax from '../../../lib/ajax';
+import ajax from '../../../util/ajax';
 import delay from '../../../util/delay';
 
 
