@@ -1,6 +1,7 @@
 /* eslint-disable brace-style */
 
 
+import dayjs from 'dayjs';
 import getModLatestInfo from '../util/getModLatestInfo';
 
 
@@ -67,6 +68,9 @@ export default {
         if (modLatestData) {
           this.$set(mod, 'checkModUpdateState', modLatestData.name === mod.filename ? 1 : 2);
           this.$set(mod, 'updateFilename', modLatestData.name);
+          this.$set(mod, 'updateFilenameUploadedDate', dayjs(modLatestData.uploaded_at).format('YYYY-MM-DD HH:mm:ss Z'));
+          this.$set(mod, 'updateFilenameChangelogUrl', modLatestData.url);
+          this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace('/files/', '/download/'));
         } else {
           this.$set(mod, 'checkModUpdateState', 5);
           this.$notification.error({ key: mod.filename, message: `${mod.name} - ${mod.subName}`, description: '模组未检测到对应版本' });

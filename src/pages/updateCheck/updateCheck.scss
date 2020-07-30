@@ -3,24 +3,39 @@
   padding: 16px;
   background-color: #FFF;
   overflow: auto;
+}
 
-  // 文件加载中时样式
-  &.state-0{
-    display: grid;
-    place-content: center;
+// 文件加载中时样式
+.update-check-root.state-0{
+  display: grid;
+  place-content: center;
+}
+
+// 文件加载完成时样式
+.update-check-root.state-1{
+  padding-top: 0;
+
+  // 标签页位置锁定
+  .update-check-tabs{
+    overflow: visible;
+
+    > .ant-tabs-bar{
+      position: sticky; top: 0;
+      background-color: #FFF;
+      z-index: 666;
+    }
   }
 
-  // 文件加载完成时样式
-  &.state-1{
-    padding-top: 0;
+  // 模组列表展示
+  .update-check-table{
 
-    > .ant-tabs{
-      overflow: visible;
+    .update-check-table-update-filename{
+      color: #1890ff;
+      cursor: pointer;
+      text-decoration: underline;
 
-      > .ant-tabs-bar{
-        position: sticky; top: 0;
-        background-color: #FFF;
-        z-index: 666;
+      > .anticon{
+        margin-left: 3px;
       }
     }
   }

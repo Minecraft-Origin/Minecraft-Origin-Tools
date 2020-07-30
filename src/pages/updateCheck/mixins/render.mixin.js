@@ -14,13 +14,6 @@
  */
 
 export default {
-  data: () => ({
-    /** 不同检测更新状态下, 文件名及版本列的样式及图标 */
-    __renderFilenameConfig: {
-      1: { filenameClass: 'color-success' },
-      2: { filenameClass: 'color-warning' }
-    }
-  }),
   methods: {
 
     /**
@@ -45,19 +38,43 @@ export default {
 
       switch (getModFilenameState) {
         case 1: {
-          const { checkModUpdateState } = mod;
-          const { filenameClass } = this.$data.__renderFilenameConfig[checkModUpdateState] || {};
+          const checkModUpdateState = mod.checkModUpdateState;
           let extraResult;
 
           // 当前模组有更新, 需要额外显示一些内容
           if (checkModUpdateState === 2) {
-            extraResult = h('div', { staticClass: 'color-error' }, [
-              h('span', null, mod.updateFilename)
+            extraResult = h('a-popover', {
+              attrs: { placement: 'right' }
+            }, [
+              // 显示内容
+              h('span', { staticClass: 'update-check-table-update-filename' }, [
+                mod.updateFilename,
+                h('a-icon', {
+                  attrs: { type: 'select' }
+                })
+              ]),
+              // 弹窗标题
+              h('b', { slot: 'title' }, '模组更新信息'),
+              // 弹窗内容
+              h('div', { slot: 'content' }, [
+                h('div', null, [
+                  h('b', null, '发布时间: '),
+                  h('span', null, mod.updateFilenameUploadedDate)
+                ]),
+                h('div', null, [
+                  h('b', null, '更新日志: '),
+                  h('a', { attrs: { href: mod.updateFilenameChangelogUrl, target: '_blank', rel: 'noreferrer' } }, mod.updateFilenameChangelogUrl)
+                ]),
+                h('div', null, [
+                  h('b', null, '下载地址: '),
+                  h('a', { attrs: { href: mod.updateFilenameDownloadUrl, target: '_blank', rel: 'noreferrer' } }, mod.updateFilenameDownloadUrl)
+                ])
+              ])
             ]);
           }
 
           return [
-            h('div', { staticClass: filenameClass }, [
+            h('div', { staticClass: checkModUpdateState === 1 ? 'color-success' : '' }, [
               h('span', null, mod.filename)
             ]),
             extraResult

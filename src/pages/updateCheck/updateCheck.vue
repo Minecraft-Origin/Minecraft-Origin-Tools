@@ -23,9 +23,9 @@
     </template>
     <!-- 文件加载完成 -->
     <template v-else-if="state === 1">
-      <a-tabs ref="tabs" v-model="tabsActiveKey" @change="onChangeTabs">
+      <a-tabs class="update-check-tabs" ref="tabs" v-model="tabsActiveKey" @change="onChangeTabs">
         <a-tab-pane v-for="menuData in modpackTypeList" :key="menuData.key" :tab="menuData.label">
-          <a-table size="middle" :pagination="false" :columns="modsTableColumns" :data-source="modpackData[menuData.key]" />
+          <a-table class="update-check-table" size="middle" :pagination="false" :columns="modsTableColumns" :data-source="modpackData[menuData.key]" />
         </a-tab-pane>
       </a-tabs>
     </template>
