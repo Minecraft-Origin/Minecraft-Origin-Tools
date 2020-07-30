@@ -17,14 +17,8 @@ export default {
   data: () => ({
     /** 不同检测更新状态下, 文件名及版本列的样式及图标 */
     __renderFilenameConfig: {
-      1: {
-        filenameClass: 'color-success',
-        filenameIcon: 'check-circle'
-      },
-      2: {
-        filenameClass: 'color-warning',
-        filenameIcon: 'info-circle'
-      }
+      1: { filenameClass: 'color-success' },
+      2: { filenameClass: 'color-warning' }
     }
   }),
   methods: {
@@ -52,21 +46,21 @@ export default {
       switch (getModFilenameState) {
         case 1: {
           const { checkModUpdateState } = mod;
-          const { filenameClass, filenameIcon } = this.$data.__renderFilenameConfig[checkModUpdateState] || {};
+          const { filenameClass } = this.$data.__renderFilenameConfig[checkModUpdateState] || {};
+          let extraResult;
+
+          // 当前模组有更新, 需要额外显示一些内容
+          if (checkModUpdateState === 2) {
+            extraResult = h('div', { staticClass: 'color-error' }, [
+              h('span', null, mod.updateFilename)
+            ]);
+          }
 
           return [
             h('div', { staticClass: filenameClass }, [
-              filenameIcon && h('a-icon', {
-                attrs: { type: filenameIcon }
-              }),
-              h('span', null, ` ${mod.filename}`)
+              h('span', null, mod.filename)
             ]),
-            checkModUpdateState === 2 && h('div', { staticClass: 'color-error' }, [
-              h('a-icon', {
-                attrs: { type: 'check-circle' }
-              }),
-              h('span', null, ` ${mod.updateFilename}`)
-            ])
+            extraResult
           ];
         }
         case 2: return h('a-icon', {

@@ -19,6 +19,12 @@ axios.interceptors.response.use(
 );
 
 
+/**
+ * 发起 Ajax 请求
+ * @param {string} url 需要请求的地址
+ * @param {{}} params 需要携带的参数
+ * @param {{}} options 其他选项
+ */
 module.exports = function ajax(url, params, options) {
   // 对 URL 进行编码
   url = encodeURI(url);
