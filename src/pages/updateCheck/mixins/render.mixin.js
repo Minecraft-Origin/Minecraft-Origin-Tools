@@ -37,7 +37,7 @@ export default {
     renderTableNameColumn(name, { subName }) {
       return [
         name,
-        subName && !name.includes(subName) && `- ${subName}`
+        subName && !name.includes(subName) && ` - ${subName}`
       ];
     },
 
