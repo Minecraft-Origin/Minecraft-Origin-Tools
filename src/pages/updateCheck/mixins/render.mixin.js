@@ -98,36 +98,42 @@ export default {
       // 只能检测来源为 curseforge 的模组
       if (mod.href.startsWith('https://www.curseforge.com/') === false) return;
 
-      const type = 'primary';
+      const h = this.$createElement;
       let icon = '';
       let disabled = true;
+      let title = '';
 
       // 文件名及版本字段还在加载中时, 此时不允许检测更新
       if (mod.filename) {
         switch (checkModUpdateState) {
-          case 1: icon = 'check-circle'; break;
-          case 2: icon = 'info-circle'; break;
-          case 3: icon = 'loading'; break;
-          case 4: icon = 'stop'; disabled = false; break;
-          case 5: icon = 'exclamation-circle'; disabled = false; break;
-          default: disabled = false; icon = 'redo';
+          case 1: icon = 'check-circle'; title = '当前模组已经是最新的了 ~'; break;
+          case 2: icon = 'info-circle'; title = '当前模组有更新<br>在左侧查看详细信息 ~'; break;
+          case 3: icon = 'loading'; title = '请稍后, 正在检测模组更新 ...'; break;
+          case 4: icon = 'stop'; disabled = false; title = '检测模组更新失败, 请重试 ~'; break;
+          case 5: icon = 'exclamation-circle'; disabled = false; title = '未检测到对应版本<br>请联系整合包作者 ~'; break;
+          default: disabled = false; icon = 'redo'; title = '单击检测当前模组更新';
         }
       }
 
-      return this.$createElement('a-button', {
-        attrs: {
-          shape: 'round',
-          type,
-          icon,
-          disabled
-        },
-        on: {
-          click: () => {
-            this.$set(mod, 'checkModUpdateState', 3);
-            this.checkModUpdate(mod);
+      return h('a-tooltip', {
+        attrs: { placement: 'right' }
+      }, [
+        // 显示内容
+        h('a-button', {
+          attrs: { shape: 'round', type: 'primary', icon, disabled },
+          on: {
+            click: () => {
+              this.$set(mod, 'checkModUpdateState', 3);
+              this.checkModUpdate(mod);
+            }
           }
-        }
-      }, mod.filename ? '' : '...');
+        }, mod.filename ? '' : '...'),
+        // 弹窗内容
+        h('div', {
+          slot: 'title',
+          domProps: { innerHTML: title }
+        })
+      ]);
     },
 
     /**
