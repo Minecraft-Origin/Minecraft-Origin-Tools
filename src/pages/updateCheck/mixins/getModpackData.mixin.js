@@ -141,6 +141,9 @@ export default {
 
             this.$set(mod, 'getModFilenameState', 1);
             this.$set(mod, 'filename', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
+            this.$set(mod, 'platform', modInfo.name.replace(/.*\[\s(BOTH|CLIENT|SERVER)\s\].*/, '$1'));
+            this.$set(mod, 'type', modInfo.name.split(']')[0].replace('[', '').trim());
+            this.$set(mod, 'modpackType', modInfo.name.split(']')[1].replace('[', '').trim());
           }
         });
       });

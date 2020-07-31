@@ -80,6 +80,7 @@ export default {
           this.$set(mod, 'updateFilenameUploadedDate', dayjs(modLatestData.uploaded_at).format('YYYY-MM-DD HH:mm:ss Z'));
           this.$set(mod, 'updateFilenameChangelogUrl', modLatestData.url);
           this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace('/files/', '/download/'));
+          this.$set(mod, 'updateFilenameDownloadFilename', `[ ${mod.type} ] [ ${mod.modpackType} ] [ ${mod.name} ] [ ${mod.platform} ] ${modLatestData.name}`);
         } else {
           this.$set(mod, 'checkModUpdateState', 6);
           this.$notification.error({ key: mod.filename, message: `${mod.name} - ${mod.subName}`, description: '模组未检测到对应版本' });

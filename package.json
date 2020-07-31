@@ -23,6 +23,7 @@
   "devDependencies": {
     "@moomfe/hu-cli": "^1.10.0-bata.3",
     "ant-design-vue": "^1.6.2",
+    "clipboard": "^2.0.6",
     "dayjs": "^1.8.31",
     "eslint": "^7.4.0",
     "eslint-config-airbnb-base": "^14.2.0",

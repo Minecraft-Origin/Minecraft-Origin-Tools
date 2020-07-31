@@ -1,3 +1,5 @@
+import Clipboard from 'clipboard';
+
 /**
  * mod.getModFilenameState: 当前模组的加载文件名状态
  *   case 1:  加载完成
@@ -69,6 +71,14 @@ export default {
                 h('div', null, [
                   h('b', null, '下载地址: '),
                   h('safe-a', { attrs: { href: mod.updateFilenameDownloadUrl } })
+                ]),
+                h('div', null, [
+                  h('b', null, '更新后的模组名称: '),
+                  h('span', {
+                    staticClass: 'color-primary cursor-pointer',
+                    attrs: { 'data-clipboard-text': mod.updateFilenameDownloadFilename, 'title': '点击复制 ~' },
+                    on: { click: this.copyInnerHTML }
+                  }, mod.updateFilenameDownloadFilename)
                 ])
               ])
             ]);
@@ -190,7 +200,27 @@ export default {
           attrs: { href }
         });
       }
+    },
+
+    /**
+     * 复制内容到剪切板
+     */
+    copyInnerHTML(event) {
+      const clipboard = new Clipboard(event.target);
+
+      clipboard.on('success', () => {
+        this.$message.success('复制成功 !');
+        clipboard.destroy();
+      });
+
+      clipboard.on('error', () => {
+        this.$message.error('复制失败 !');
+        clipboard.destroy();
+      });
+
+      clipboard.onClick(event);
     }
 
   }
+
 };
