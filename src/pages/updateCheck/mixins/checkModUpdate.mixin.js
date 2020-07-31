@@ -20,7 +20,11 @@ import getModLatestInfo from '../util/getModLatestInfo';
 export default {
   data: () => ({
     /** 检测更新时, 需要查找的版本 */
-    __checkVersions: ['1.12.2', '1.12']
+    __checkVersions: ['1.12.2', '1.12'],
+    __filterGameVersion: {
+      '1.12.2': '2020709689:6756',
+      '1.12': '2020709689:6580'
+    }
   }),
   methods: {
 
@@ -51,9 +55,11 @@ export default {
         let modFiles;
         let modVersions;
         let modLatestData;
+        let checkVersion;
 
-        for (const checkVersion of this.$data.__checkVersions) {
-          modFiles = modLatestInfo.files.filter(({ versions }) => versions.includes(checkVersion));
+        for (const __checkVersion of this.$data.__checkVersions) {
+          checkVersion = __checkVersion;
+          modFiles = modLatestInfo.files.filter(({ versions }) => versions.includes(__checkVersion));
           modVersions = modLatestInfo.versions[checkVersion];
 
           // 如果在 files 数组中找到了对应游戏版本号的模组
@@ -79,7 +85,8 @@ export default {
           this.$set(mod, 'updateFilename', modLatestData.name);
           this.$set(mod, 'updateFilenameUploadedDate', dayjs(modLatestData.uploaded_at).format('YYYY-MM-DD HH:mm:ss Z'));
           this.$set(mod, 'updateFilenameChangelogUrl', modLatestData.url);
-          this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace('/files/', '/download/'));
+          this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace(/\/files\//, '/download/'));
+          this.$set(mod, 'updateFilenameGameVersionUrl', modLatestData.url.replace(/\/files\/.*$/, `/files/all?filter-game-version=${this.$data.__filterGameVersion[checkVersion]}`));
           this.$set(mod, 'updateFilenameDownloadFilename', `[ ${mod.type} ] [ ${mod.modpackType} ] [ ${mod.name} ] [ ${mod.platform} ] ${modLatestData.name}`);
         } else {
           this.$set(mod, 'checkModUpdateState', 6);
