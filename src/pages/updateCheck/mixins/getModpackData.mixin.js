@@ -89,6 +89,7 @@ export default {
 
           // 保存基础模组信息
           tableData.push({
+            key: `${name}-${subName}-${href}`,
             name,
             subName,
             href
