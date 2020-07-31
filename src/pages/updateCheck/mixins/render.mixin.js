@@ -1,4 +1,4 @@
-import Clipboard from 'clipboard';
+import { copyInnerHTMLToClipboard as copyInnerHTML } from '../../../util/copyToClipboard';
 
 /**
  * mod.getModFilenameState: 当前模组的加载文件名状态
@@ -18,6 +18,8 @@ import Clipboard from 'clipboard';
 
 export default {
   methods: {
+    /** 复制内容到剪切板 */
+    copyInnerHTML,
 
     /**
      * 渲染表格中 "名称" 列内容
@@ -200,25 +202,6 @@ export default {
           attrs: { href }
         });
       }
-    },
-
-    /**
-     * 复制内容到剪切板
-     */
-    copyInnerHTML(event) {
-      const clipboard = new Clipboard(event.target);
-
-      clipboard.on('success', () => {
-        this.$message.success('复制成功 !');
-        clipboard.destroy();
-      });
-
-      clipboard.on('error', () => {
-        this.$message.error('复制失败 !');
-        clipboard.destroy();
-      });
-
-      clipboard.onClick(event);
     }
 
   }
