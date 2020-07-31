@@ -7,10 +7,10 @@ const HU_RUNNING_COMMAND = process.env.HU_RUNNING_COMMAND;
 
 // 拷贝类库到静态资源文件夹
 [
-  resolve(dirname(require.resolve('vue')), 'vue.min.js'),
-  resolve(dirname(require.resolve('axios')), 'dist/axios.min.js'),
-  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.js'),
-  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.min.css')
+  resolve(dirname(require.resolve('vue')), 'vue.js'),
+  resolve(dirname(require.resolve('axios')), 'dist/axios.js'),
+  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.js'),
+  resolve(dirname(require.resolve('ant-design-vue')), '../dist/antd.css')
 ].forEach((from) => {
   copySync(from, resolve(
     __dirname, `client/static/${extname(from) === '.css' ? 'styles' : 'lib'}`, basename(from)
