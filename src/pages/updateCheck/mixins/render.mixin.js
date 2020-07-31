@@ -44,57 +44,13 @@ export default {
       switch (getModFilenameState) {
         case 1: {
           const checkModUpdateState = mod.checkModUpdateState;
-          let extraResult;
-
-          // 当前模组有更新, 需要额外显示一些内容
-          if (checkModUpdateState === 2) {
-            extraResult = h('a-popover', {
-              attrs: { placement: 'right' }
-            }, [
-              // 显示内容
-              h('span', { staticClass: 'update-check-table-update-filename' }, [
-                mod.updateFilename,
-                h('a-icon', {
-                  attrs: { type: 'select' }
-                })
-              ]),
-              // 弹窗标题
-              h('b', { slot: 'title' }, '模组更新信息'),
-              // 弹窗内容
-              h('div', { slot: 'content' }, [
-                h('div', null, [
-                  h('b', null, '发布时间: '),
-                  h('span', null, mod.updateFilenameUploadedDate)
-                ]),
-                h('div', null, [
-                  h('b', null, '更新日志: '),
-                  h('safe-a', { attrs: { href: mod.updateFilenameChangelogUrl } })
-                ]),
-                h('div', null, [
-                  h('b', null, '版本列表: '),
-                  h('safe-a', { attrs: { href: mod.updateFilenameGameVersionUrl } })
-                ]),
-                h('div', null, [
-                  h('b', null, '下载地址: '),
-                  h('safe-a', { attrs: { href: mod.updateFilenameDownloadUrl } })
-                ]),
-                h('div', null, [
-                  h('b', null, '更新后的模组名称: '),
-                  h('span', {
-                    staticClass: 'color-primary cursor-pointer',
-                    attrs: { 'data-clipboard-text': mod.updateFilenameDownloadFilename, 'title': '点击复制 ~' },
-                    on: { click: this.copyInnerHTML }
-                  }, mod.updateFilenameDownloadFilename)
-                ])
-              ])
-            ]);
-          }
 
           return [
             h('div', { staticClass: checkModUpdateState === 1 ? 'color-success' : '' }, [
               h('span', null, mod.filename)
             ]),
-            extraResult
+            // 当前模组有更新, 需要额外显示一些内容
+            checkModUpdateState === 2 && this.renderTableFilenameColumnUpdateFilename(mod)
           ];
         }
         case 2: return h('a-icon', {
@@ -104,6 +60,54 @@ export default {
           attrs: { size: 'small', title: '文件名及版本加载中' }
         });
       }
+    },
+    /**
+     * 渲染表格中 "文件名及版本" 列的文件更新信息
+     * @param {{}} mod 当前模组数据对象
+     */
+    renderTableFilenameColumnUpdateFilename(mod) {
+      const h = this.$createElement;
+
+      return h('a-popover', {
+        attrs: { placement: 'right' }
+      }, [
+        // 显示内容
+        h('span', { staticClass: 'update-check-table-update-filename' }, [
+          mod.updateFilename,
+          h('a-icon', {
+            attrs: { type: 'select' }
+          })
+        ]),
+        // 弹窗标题
+        h('b', { slot: 'title' }, '模组更新信息'),
+        // 弹窗内容
+        h('div', { slot: 'content' }, [
+          h('div', null, [
+            h('b', null, '发布时间: '),
+            h('span', null, mod.updateFilenameUploadedDate)
+          ]),
+          h('div', null, [
+            h('b', null, '更新日志: '),
+            h('safe-a', { attrs: { href: mod.updateFilenameChangelogUrl } })
+          ]),
+          h('div', null, [
+            h('b', null, '版本列表: '),
+            h('safe-a', { attrs: { href: mod.updateFilenameGameVersionUrl } })
+          ]),
+          h('div', null, [
+            h('b', null, '下载地址: '),
+            h('safe-a', { attrs: { href: mod.updateFilenameDownloadUrl } })
+          ]),
+          h('div', null, [
+            h('b', null, '更新后的模组名称: '),
+            h('span', {
+              staticClass: 'color-primary cursor-pointer',
+              attrs: { 'data-clipboard-text': mod.updateFilenameDownloadFilename, 'title': '点击复制 ~' },
+              on: { click: this.copyInnerHTML }
+            }, mod.updateFilenameDownloadFilename)
+          ])
+        ])
+      ]);
     },
 
     /**
@@ -122,7 +126,6 @@ export default {
         this.renderTableUpdateCheckColumnTooltipTitle(checkModUpdateState, mod)
       ]);
     },
-
     /**
      * 渲染表格中 "检测更新" 列内容的按钮
      * @param {number} checkModUpdateState 当前模组的检测更新状态
@@ -154,7 +157,6 @@ export default {
         }
       });
     },
-
     /**
      * 渲染表格中 "检测更新" 列内容的 Tooltip 提示内容
      * @param {number} checkModUpdateState 当前模组的检测更新状态

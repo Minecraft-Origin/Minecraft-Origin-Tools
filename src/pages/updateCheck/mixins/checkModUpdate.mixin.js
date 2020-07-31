@@ -21,6 +21,7 @@ export default {
   data: () => ({
     /** 检测更新时, 需要查找的版本 */
     __checkVersions: ['1.12.2', '1.12'],
+    /** 不同版本的版本列表 `filter-game-version` 过滤参数 */
     __filterGameVersion: {
       '1.12.2': '2020709689:6756',
       '1.12': '2020709689:6580'
