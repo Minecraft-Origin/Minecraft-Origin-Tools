@@ -7,9 +7,10 @@
  * mod.checkModUpdateState: 当前模组的检测更新状态
  *   case 1: 当前模组已经是最新的了
  *   case 2: 当前模组有更新
- *   case 3: 正在检测更新
- *   case 4: 检测更新失败
- *   case 5: 未检测到对应版本
+ *   case 3: 正在等待检测更新
+ *   case 4: 正在检测更新
+ *   case 5: 检测更新失败
+ *   case 6: 未检测到对应版本
  *   default: 无状态
  */
 
@@ -120,9 +121,10 @@ export default {
         switch (checkModUpdateState) {
           case 1: icon = 'check-circle'; break;
           case 2: icon = 'info-circle'; break;
-          case 3: icon = 'loading'; break;
-          case 4: icon = 'stop'; disabled = false; break;
-          case 5: icon = 'exclamation-circle'; disabled = false; break;
+          case 3: icon = 'pause-circle'; break;
+          case 4: icon = 'loading'; break;
+          case 5: icon = 'stop'; disabled = false; break;
+          case 6: icon = 'exclamation-circle'; disabled = false; break;
           default: disabled = false; icon = 'redo';
         }
       }
@@ -131,7 +133,6 @@ export default {
         attrs: { shape: 'round', type: 'primary', icon, disabled },
         on: {
           click: () => {
-            this.$set(mod, 'checkModUpdateState', 3);
             this.checkModUpdate(mod);
           }
         }
@@ -147,17 +148,25 @@ export default {
       const h = this.$createElement;
       const children = [];
       const options = {};
-      let title = '';
+      let title = '整合包文件名及版本还未加载完成<br>请稍后 ~';
 
       // 文件名及版本字段还在加载中时, 此时不允许检测更新
       if (mod.filename) {
         switch (checkModUpdateState) {
           case 1: title = '当前模组已经是最新的了 ~'; break;
           case 2: title = '当前模组有更新<br>在左侧查看详细信息 ~'; break;
-          case 3: title = '请稍后, 正在检测模组更新 ...'; break;
-          case 4: title = '检测模组更新失败, 请重试 ~'; break;
-          case 5: title = '未检测到对应版本<br>请联系整合包作者 ~'; break;
-          default: title = '单击检测当前模组更新';
+          case 3: title = '请稍后, 正在等待检测模组更新 ...'; break;
+          case 4: title = '请稍后, 正在检测模组更新 ...'; break;
+          case 5: title = '检测模组更新失败, 请重试 ~'; break;
+          case 6: title = '未检测到对应版本<br>请联系整合包作者 ~'; break;
+          default: title = h('span', null, [
+            h('div', null, '单击检测当前模组更新'),
+            h('div', null, [
+              '点击 ',
+              h('span', { staticClass: 'color-primary cursor-pointer', on: { click: this.checkModsUpdateByActiveTab } }, '这里'),
+              ' 检测当前页模组更新'
+            ])
+          ]);
         }
       }
 
