@@ -106,7 +106,7 @@ export default {
         return mod.href.startsWith('https://www.curseforge.com/');
       });
 
-      // 所有模组标记正在等待检测
+      // 所有模组标记正在等待更新检测
       modsData.forEach((mod) => {
         this.$set(mod, 'checkModUpdateState', 3);
       });
