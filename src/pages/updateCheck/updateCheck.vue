@@ -83,7 +83,7 @@
         modsTableColumns: [
           { title: '名称', dataIndex: 'name', width: '28em', customRender: this.renderTableNameColumn },
           { title: '文件名及版本', dataIndex: 'getModFilenameState', width: '28em', customRender: this.renderTableFilenameColumn },
-          { title: '检测更新', dataIndex: 'checkModUpdateState', width: '88px', align: 'center', customRender: this.renderTableUpdateCheckButton },
+          { title: '检测更新', dataIndex: 'checkModUpdateState', width: '88px', align: 'center', customRender: this.renderTableUpdateCheckColumn },
           { title: '模组主页', dataIndex: 'href', customRender: this.renderTableHomeColumn }
         ]
       };

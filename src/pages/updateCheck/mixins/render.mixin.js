@@ -90,50 +90,84 @@ export default {
     },
 
     /**
-     * 渲染表格中 "检测更新" 的按钮
+     * 渲染表格中 "检测更新" 列内容
      * @param {number} checkModUpdateState 当前模组的检测更新状态
      * @param {{}} mod 当前模组数据对象
      */
-    renderTableUpdateCheckButton(checkModUpdateState, mod) {
+    renderTableUpdateCheckColumn(checkModUpdateState, mod) {
       // 只能检测来源为 curseforge 的模组
       if (mod.href.startsWith('https://www.curseforge.com/') === false) return;
 
-      const h = this.$createElement;
-      let icon = '';
+      return this.$createElement('a-tooltip', {
+        attrs: { placement: 'right' }
+      }, [
+        this.renderTableUpdateCheckColumnButton(checkModUpdateState, mod),
+        this.renderTableUpdateCheckColumnTooltipTitle(checkModUpdateState, mod)
+      ]);
+    },
+
+    /**
+     * 渲染表格中 "检测更新" 列内容的按钮
+     * @param {number} checkModUpdateState 当前模组的检测更新状态
+     * @param {{}} mod 当前模组数据对象
+     */
+    renderTableUpdateCheckColumnButton(checkModUpdateState, mod) {
+      let icon = 'dash';
       let disabled = true;
+
+      // 文件名及版本字段还在加载中时, 此时不允许检测更新
+      if (mod.filename) {
+        switch (checkModUpdateState) {
+          case 1: icon = 'check-circle'; break;
+          case 2: icon = 'info-circle'; break;
+          case 3: icon = 'loading'; break;
+          case 4: icon = 'stop'; disabled = false; break;
+          case 5: icon = 'exclamation-circle'; disabled = false; break;
+          default: disabled = false; icon = 'redo';
+        }
+      }
+
+      return this.$createElement('a-button', {
+        attrs: { shape: 'round', type: 'primary', icon, disabled },
+        on: {
+          click: () => {
+            this.$set(mod, 'checkModUpdateState', 3);
+            this.checkModUpdate(mod);
+          }
+        }
+      });
+    },
+
+    /**
+     * 渲染表格中 "检测更新" 列内容的 Tooltip 提示内容
+     * @param {number} checkModUpdateState 当前模组的检测更新状态
+     * @param {{}} mod 当前模组数据对象
+     */
+    renderTableUpdateCheckColumnTooltipTitle(checkModUpdateState, mod) {
+      const h = this.$createElement;
+      const children = [];
+      const options = {};
       let title = '';
 
       // 文件名及版本字段还在加载中时, 此时不允许检测更新
       if (mod.filename) {
         switch (checkModUpdateState) {
-          case 1: icon = 'check-circle'; title = '当前模组已经是最新的了 ~'; break;
-          case 2: icon = 'info-circle'; title = '当前模组有更新<br>在左侧查看详细信息 ~'; break;
-          case 3: icon = 'loading'; title = '请稍后, 正在检测模组更新 ...'; break;
-          case 4: icon = 'stop'; disabled = false; title = '检测模组更新失败, 请重试 ~'; break;
-          case 5: icon = 'exclamation-circle'; disabled = false; title = '未检测到对应版本<br>请联系整合包作者 ~'; break;
-          default: disabled = false; icon = 'redo'; title = '单击检测当前模组更新';
+          case 1: title = '当前模组已经是最新的了 ~'; break;
+          case 2: title = '当前模组有更新<br>在左侧查看详细信息 ~'; break;
+          case 3: title = '请稍后, 正在检测模组更新 ...'; break;
+          case 4: title = '检测模组更新失败, 请重试 ~'; break;
+          case 5: title = '未检测到对应版本<br>请联系整合包作者 ~'; break;
+          default: title = '单击检测当前模组更新';
         }
       }
 
-      return h('a-tooltip', {
-        attrs: { placement: 'right' }
-      }, [
-        // 显示内容
-        h('a-button', {
-          attrs: { shape: 'round', type: 'primary', icon, disabled },
-          on: {
-            click: () => {
-              this.$set(mod, 'checkModUpdateState', 3);
-              this.checkModUpdate(mod);
-            }
-          }
-        }, mod.filename ? '' : '...'),
-        // 弹窗内容
-        h('div', {
-          slot: 'title',
-          domProps: { innerHTML: title }
-        })
-      ]);
+      if (typeof title === 'string') {
+        options.domProps = { innerHTML: title };
+      } else {
+        children.push(title);
+      }
+
+      return h('div', Object.assign({ slot: 'title' }, options), children);
     },
 
     /**
