@@ -140,6 +140,7 @@ export default {
             const modInfo = files.splice(modInfoIndex, 1)[0];
 
             this.$set(mod, 'getModFilenameState', 1);
+            this.$set(mod, 'name2', modTitle);
             this.$set(mod, 'filename', modInfo.name.split(/\[\s(BOTH|CLIENT|SERVER)\s\]/).slice(-1)[0].trim());
             this.$set(mod, 'platform', modInfo.name.replace(/.*\[\s(BOTH|CLIENT|SERVER)\s\].*/, '$1'));
             this.$set(mod, 'type', modInfo.name.split(']')[0].replace('[', '').trim());

@@ -88,7 +88,7 @@ export default {
           this.$set(mod, 'updateFilenameChangelogUrl', modLatestData.url);
           this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace(/\/files\//, '/download/'));
           this.$set(mod, 'updateFilenameGameVersionUrl', modLatestData.url.replace(/\/files\/.*$/, `/files/all?filter-game-version=${this.$data.__filterGameVersion[checkVersion]}`));
-          this.$set(mod, 'updateFilenameDownloadFilename', `[ ${mod.type} ] [ ${mod.modpackType} ] [ ${mod.name} ] [ ${mod.platform} ] ${modLatestData.name}`);
+          this.$set(mod, 'updateFilenameDownloadFilename', `[ ${mod.type} ] [ ${mod.modpackType} ] [ ${mod.name2} ] [ ${mod.platform} ] ${modLatestData.name}`);
         } else {
           this.$set(mod, 'checkModUpdateState', 6);
           this.$notification.error({ key: mod.filename, message: `${mod.name} - ${mod.subName}`, description: '模组未检测到对应版本' });
