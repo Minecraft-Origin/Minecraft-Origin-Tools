@@ -87,12 +87,12 @@ export default {
             h('span', null, mod.updateFilenameUploadedDate)
           ]),
           h('div', null, [
-            h('b', null, '更新日志: '),
-            h('safe-a', { attrs: { href: mod.updateFilenameChangelogUrl } })
-          ]),
-          h('div', null, [
             h('b', null, '版本列表: '),
             h('safe-a', { attrs: { href: mod.updateFilenameGameVersionUrl } })
+          ]),
+          h('div', null, [
+            h('b', null, '更新日志: '),
+            h('safe-a', { attrs: { href: mod.updateFilenameChangelogUrl } })
           ]),
           h('div', null, [
             h('b', null, '下载地址: '),
