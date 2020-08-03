@@ -105,7 +105,8 @@ export default {
               attrs: { 'data-clipboard-text': mod.updateFilenameDownloadFilename, 'title': '点击复制 ~' },
               on: { click: this.copyInnerHTML }
             }, mod.updateFilenameDownloadFilename)
-          ])
+          ]),
+          h('a', { staticClass: 'color-primary cursor-pointer', attrs: { href: mod.updateFilenameDownloadFileUrl, download: mod.updateFilenameDownloadFilename } }, '点击下载')
         ])
       ]);
     },

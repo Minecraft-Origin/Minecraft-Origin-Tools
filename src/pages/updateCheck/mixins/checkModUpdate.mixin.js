@@ -87,6 +87,7 @@ export default {
           this.$set(mod, 'updateFilenameUploadedDate', dayjs(modLatestData.uploaded_at).format('YYYY-MM-DD HH:mm:ss Z'));
           this.$set(mod, 'updateFilenameChangelogUrl', modLatestData.url);
           this.$set(mod, 'updateFilenameDownloadUrl', modLatestData.url.replace(/\/files\//, '/download/'));
+          this.$set(mod, 'updateFilenameDownloadFileUrl', `https://edge.forgecdn.net/files/${modLatestData.url.slice(-7, -3)}/${modLatestData.url.slice(-3)}/${modLatestData.name}`);
           this.$set(mod, 'updateFilenameGameVersionUrl', modLatestData.url.replace(/\/files\/.*$/, `/files/all?filter-game-version=${this.$data.__filterGameVersion[checkVersion]}`));
           this.$set(mod, 'updateFilenameDownloadFilename', `[ ${mod.type} ] [ ${mod.modpackType} ] [ ${mod.name2} ] [ ${mod.platform} ] ${modLatestData.name}`);
         } else {
