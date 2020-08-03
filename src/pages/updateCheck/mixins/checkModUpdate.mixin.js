@@ -98,6 +98,17 @@ export default {
     },
 
     /**
+     * 强制检测单个模组更新
+     * @param {{}} mod 模组数据
+     */
+    async checkModUpdateForce(mod) {
+      // 清除模组的检测更新状态
+      delete mod.checkModUpdateState;
+      // 检测单个模组更新
+      await this.checkModUpdate(mod);
+    },
+
+    /**
      * 检测当前标签页的模组更新
      */
     async checkModsUpdateByActiveTab() {

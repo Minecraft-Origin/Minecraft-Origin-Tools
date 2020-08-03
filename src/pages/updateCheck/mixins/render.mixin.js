@@ -170,9 +170,19 @@ export default {
 
       // 文件名及版本字段还在加载中时, 此时不允许检测更新
       if (mod.filename) {
+        let extraElement;
+
+        if ([1, 2].includes(checkModUpdateState)) {
+          extraElement = h('div', null, [
+            '点击 ',
+            h('span', { staticClass: 'color-primary cursor-pointer', on: { click: () => this.checkModUpdateForce(mod) } }, '这里'),
+            ' 重新检测'
+          ]);
+        }
+
         switch (checkModUpdateState) {
-          case 1: title = '当前模组已经是最新的了 ~'; break;
-          case 2: title = '当前模组有更新<br>在左侧查看详细信息 ~'; break;
+          case 1: title = h('span', null, [h('div', { domProps: { innerHTML: '当前模组已经是最新的了 ~' } }), extraElement]); break;
+          case 2: title = h('span', null, [h('div', { domProps: { innerHTML: '当前模组有更新<br>在左侧查看详细信息 ~' } }), extraElement]); break;
           case 3: title = '请稍后, 正在等待检测模组更新 ...'; break;
           case 4: title = '请稍后, 正在检测模组更新 ...'; break;
           case 5: title = '检测模组更新失败, 请重试 ~'; break;
